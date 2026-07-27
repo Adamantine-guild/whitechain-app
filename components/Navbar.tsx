@@ -1,11 +1,39 @@
 'use client';
 
 import { useState } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
 import { WalletModal } from './WalletModal';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+function BalanceDisplay() {
+  const { address } = useAccount();
+  const { data, isLoading, refetch } = useBalance({
+    address,
+    query: { refetchOnWindowFocus: false }
+  });
+
+  // useBalance doesn't poll on its own, so nudge it every block to keep the
+  // figure in sync with on-chain state (deposits, withdrawals, gas spend).
+  useWatchBlockNumber({
+    onBlockNumber: () => {
+      refetch();
+    }
+  });
+
+  if (isLoading) {
+    return <span className="h-4 w-16 animate-pulse rounded bg-gray-200" aria-label="Loading balance" />;
+  }
+
+  if (!data) return null;
+
+  return (
+    <span className="text-sm font-medium text-gray-700">
+      {Number(data.formatted).toFixed(4)} {data.symbol}
+    </span>
+  );
 }
 
 export function Navbar() {
@@ -19,9 +47,12 @@ export function Navbar() {
         <span className="text-lg font-semibold text-gray-900">WhiteChain</span>
 
         {isConnected && address ? (
-          <button type="button" onClick={() => disconnect()} className="btn-outline">
-            {shortenAddress(address)}
-          </button>
+          <div className="flex items-center gap-3">
+            <BalanceDisplay />
+            <button type="button" onClick={() => disconnect()} className="btn-outline">
+              {shortenAddress(address)}
+            </button>
+          </div>
         ) : (
           <button type="button" onClick={() => setIsModalOpen(true)} className="btn">
             Connect Wallet
