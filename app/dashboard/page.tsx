@@ -1,4 +1,5 @@
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
+import { TransactionHistorySection } from '@/components/TransactionHistorySection';
 
 export default function DashboardPage() {
   return (
@@ -18,6 +19,8 @@ export default function DashboardPage() {
           <h2 className="text-sm font-semibold text-gray-900">Portfolio</h2>
           <p className="mt-2 text-sm text-gray-600">Connect a wallet to see your holdings.</p>
         </section>
+
+        <TransactionHistorySection />
       </div>
     </DashboardLayout>
   );
