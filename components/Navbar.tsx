@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
 import { useIsMounted } from '@/lib/useIsMounted';
 import { WalletModal } from './WalletModal';
@@ -54,9 +55,12 @@ export function Navbar() {
         {isMounted && isConnected && address ? (
           <div className="flex items-center gap-3">
             <BalanceDisplay />
-            <button type="button" onClick={() => disconnect()} className="btn-outline">
-              {shortenAddress(address)}
-            </button>
+            <span className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5">
+              <button type="button" onClick={() => disconnect()} className="text-sm font-medium text-gray-900">
+                {shortenAddress(address)}
+              </button>
+              <CopyAddress address={address} />
+            </span>
           </div>
         ) : (
           <button type="button" onClick={() => setIsModalOpen(true)} className="btn" disabled={!isMounted}>
