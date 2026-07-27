@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
 import { useIsMounted } from '@/lib/useIsMounted';
 import { CopyAddress } from './CopyAddress';
+import { ProfileDropdown } from './ProfileDropdown';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -44,13 +45,7 @@ export function Navbar() {
             <>
               <BalanceDisplay />
 
-              <button
-                type="button"
-                onClick={() => disconnect()}
-                className="btn-outline"
-              >
-                {shortenAddress(address)}
-              </button>
+              <ProfileDropdown />
             </>
           ) : (
             <button
