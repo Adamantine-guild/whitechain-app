@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { TransactionHistorySection } from '@/components/TransactionHistorySection';
 import { TransactionSimulator } from '@/components/TransactionSimulator';
@@ -35,7 +35,10 @@ export default function DashboardPage() {
 
         <CachedActivity />
 
-        <TransactionHistorySection />
+        {/* useSearchParams (page state, #15) requires a Suspense boundary. */}
+        <Suspense fallback={null}>
+          <TransactionHistorySection />
+        </Suspense>
       </div>
 
       <SendModal isOpen={sendOpen} onClose={() => setSendOpen(false)} />
