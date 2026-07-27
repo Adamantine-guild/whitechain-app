@@ -3,15 +3,8 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
-import { CopyAddress } from './CopyAddress';
-
-// Lazily load the wallet-selection modal. Its connector code (incl. any
-// WalletConnect wiring) is only pulled into the client bundle the first time
-// a user actually opens the connect dialog, keeping it out of the initial
-// route payload.
-const WalletModal = dynamic(() => import('./WalletModal').then((m) => m.WalletModal), {
-  ssr: false
-});
+import { useIsMounted } from '@/lib/useIsMounted';
+import { WalletModal } from './WalletModal';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -49,13 +42,17 @@ export function Navbar() {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Wagmi's connection state is read from localStorage on the client, so it
+  // can differ from the server's initial render. Wait for mount before
+  // trusting isConnected, otherwise React throws a hydration mismatch.
+  const isMounted = useIsMounted();
 
   return (
     <header className="border-b border-gray-200 bg-white">
       <div className="container flex h-16 items-center justify-between">
         <span className="text-lg font-semibold text-gray-900">WhiteChain</span>
 
-        {isConnected && address ? (
+        {isMounted && isConnected && address ? (
           <div className="flex items-center gap-3">
             <BalanceDisplay />
             <span className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5">
@@ -66,7 +63,7 @@ export function Navbar() {
             </span>
           </div>
         ) : (
-          <button type="button" onClick={() => setIsModalOpen(true)} className="btn">
+          <button type="button" onClick={() => setIsModalOpen(true)} className="btn" disabled={!isMounted}>
             Connect Wallet
           </button>
         )}

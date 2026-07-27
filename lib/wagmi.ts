@@ -12,6 +12,9 @@ const sepoliaRpcUrls = parseRpcUrls(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URLS);
 
 export const wagmiConfig = createConfig({
   chains: [mainnet, sepolia],
+  // Defers reading persisted connector state until after hydration, so the
+  // client's first render matches what the server rendered.
+  ssr: true,
   connectors: [
     injected(),
     coinbaseWallet({ appName: process.env.NEXT_PUBLIC_APP_NAME ?? 'WhiteChain' }),
