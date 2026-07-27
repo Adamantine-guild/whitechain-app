@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Providers } from './providers';
 import { Navbar } from '@/components/Navbar';
+import { NetworkBanner } from '@/components/NetworkBanner';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: 'WhiteChain',
@@ -12,10 +14,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <Providers>
-          <Navbar />
-          <main className="container py-8">{children}</main>
-        </Providers>
+        <ErrorBoundary>
+          <Providers>
+            <Navbar />
+            <NetworkBanner />
+            <main className="container py-8">{children}</main>
+          </Providers>
+        </ErrorBoundary>
       </body>
     </html>
   );
