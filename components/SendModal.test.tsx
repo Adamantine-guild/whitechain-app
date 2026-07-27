@@ -22,7 +22,9 @@ vi.mock('wagmi', () => ({
   useBalance: () => ({
     data: { value: 1000n, formatted: '0.000000000000001', symbol: 'ETH' },
     isLoading: false
-  })
+  }),
+  // No gas price → no reserve is subtracted, so maxSendableWei == balanceWei.
+  useGasPrice: () => ({ data: undefined })
 }));
 
 describe('SendModal', () => {
@@ -75,5 +77,36 @@ describe('SendModal', () => {
     await waitFor(() => {
       expect((screen.getByText('Send') as HTMLButtonElement).disabled).toBe(false);
     });
+  });
+
+  // #19: percentage slider + Max button
+  it('clicking Max fills the amount with the full balance (no gas price known)', async () => {
+    render(<SendModal isOpen onClose={() => {}} />);
+    fireEvent.click(screen.getByText('Max'));
+    await waitFor(() => {
+      expect((screen.getByLabelText('Amount in wei') as HTMLInputElement).value).toBe('1000');
+    });
+  });
+
+  it('dragging the slider to 50% fills half the balance', async () => {
+    render(<SendModal isOpen onClose={() => {}} />);
+    fireEvent.change(screen.getByLabelText('Percentage of balance to send'), {
+      target: { value: '50' }
+    });
+    await waitFor(() => {
+      expect((screen.getByLabelText('Amount in wei') as HTMLInputElement).value).toBe('500');
+    });
+  });
+
+  it('resets the slider percentage when the modal closes and reopens', async () => {
+    const { rerender } = render(<SendModal isOpen onClose={() => {}} />);
+    fireEvent.click(screen.getByText('Max'));
+    await waitFor(() => {
+      expect(screen.getByText('100%')).toBeTruthy();
+    });
+
+    rerender(<SendModal isOpen={false} onClose={() => {}} />);
+    rerender(<SendModal isOpen onClose={() => {}} />);
+    expect(screen.getByText('0%')).toBeTruthy();
   });
 });
