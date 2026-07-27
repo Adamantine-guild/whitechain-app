@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
+import { CopyAddress } from './CopyAddress';
 import { WalletModal } from './WalletModal';
 
 function shortenAddress(address: string) {
@@ -49,9 +50,12 @@ export function Navbar() {
         {isConnected && address ? (
           <div className="flex items-center gap-3">
             <BalanceDisplay />
-            <button type="button" onClick={() => disconnect()} className="btn-outline">
-              {shortenAddress(address)}
-            </button>
+            <span className="flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 py-1.5">
+              <button type="button" onClick={() => disconnect()} className="text-sm font-medium text-gray-900">
+                {shortenAddress(address)}
+              </button>
+              <CopyAddress address={address} />
+            </span>
           </div>
         ) : (
           <button type="button" onClick={() => setIsModalOpen(true)} className="btn">
