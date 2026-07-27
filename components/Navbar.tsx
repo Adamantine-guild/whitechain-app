@@ -11,6 +11,7 @@ import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagm
 import { useIsMounted } from '@/lib/useIsMounted';
 import { CopyAddress } from './CopyAddress';
 import { ProfileDropdown } from './ProfileDropdown';
+import { ThemeToggle } from './ThemeToggle';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -31,22 +32,17 @@ export function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
   return (
-     <header className="border-b border-gray-200 bg-white">
+     <header className="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <span className="text-lg font-semibold text-gray-900">
+        <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
           WhiteChain
         </span>
 
         {/* Desktop Wallet Actions */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           {isConnected && address ? (
             <>
               <BalanceDisplay />
@@ -80,7 +76,7 @@ export function Navbar() {
           }
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-navigation"
-          className="rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400 md:hidden"
+          className="rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100 md:hidden"
         >
           {isMobileMenuOpen ? (
             <X size={24} aria-hidden="true" />
