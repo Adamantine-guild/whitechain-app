@@ -1,6 +1,6 @@
-# Contributing to GrantChain App
+# Contributing to WhiteChain App
 
-Thank you for your interest in contributing to GrantChain App! This document guides you through the contribution process.
+Thank you for your interest in contributing to WhiteChain App! This document guides you through the contribution process.
 
 ## GrantFox Contribution Workflow
 

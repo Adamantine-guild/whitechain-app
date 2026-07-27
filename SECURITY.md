@@ -2,7 +2,7 @@
 
 ## Reporting Security Vulnerabilities
 
-If you discover a security vulnerability in GrantChain App, please report it responsibly.
+If you discover a security vulnerability in WhiteChain App, please report it responsibly.
 
 ### How to Report
 
@@ -32,7 +32,7 @@ Include the following information:
 
 ## Security Best Practices
 
-When developing or deploying GrantChain App:
+When developing or deploying WhiteChain App:
 
 - Never commit private keys or sensitive credentials
 - Use environment variables for configuration
@@ -74,4 +74,4 @@ This repository contains a web application that handles user data. Key security 
 - **CSRF Protection**: Implement CSRF tokens for state-changing operations
 - **Dependency Security**: Regularly audit and update dependencies
 
-Thank you for helping keep GrantChain App secure!
+Thank you for helping keep WhiteChain App secure!

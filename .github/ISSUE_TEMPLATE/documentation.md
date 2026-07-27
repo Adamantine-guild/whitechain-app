@@ -1,6 +1,6 @@
 ---
 name: Documentation improvement
-about: Suggest improvements to GrantChain App documentation
+about: Suggest improvements to WhiteChain App documentation
 title: '[DOCS] '
 labels: documentation
 assignees: ''

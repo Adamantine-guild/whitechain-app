@@ -1,6 +1,6 @@
-# GrantChain MVP App
+# WhiteChain MVP App
 
-A Next.js application for the GrantChain MVP, providing a web interface for grant management, application submission, and milestone tracking. Built with React, TypeScript, and Tailwind CSS.
+A Next.js application for the WhiteChain MVP, providing a web interface for grant management, application submission, and milestone tracking. Built with React, TypeScript, and Tailwind CSS.
 
 ## Tech Stack
 
