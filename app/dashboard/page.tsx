@@ -1,6 +1,7 @@
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { TransactionHistorySection } from '@/components/TransactionHistorySection';
 import { TransactionSimulator } from '@/components/TransactionSimulator';
+import { CachedActivity } from '@/components/CachedActivity';
 
 export default function DashboardPage() {
   return (
@@ -22,6 +23,8 @@ export default function DashboardPage() {
         </section>
 
         <TransactionSimulator />
+
+        <CachedActivity />
 
         <TransactionHistorySection />
       </div>

@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
 import { useIsMounted } from '@/lib/useIsMounted';
 import { WalletModal } from './WalletModal';
+import { CopyAddress } from './CopyAddress';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
