@@ -21,7 +21,9 @@ const disconnectMock = vi.fn();
 const hoisted = vi.hoisted(() => ({ connected: true, address: '0x1111111111111111111111111111111111111111' }));
 vi.mock('wagmi', () => ({
   useAccount: () => ({ address: hoisted.address as `0x${string}`, isConnected: hoisted.connected }),
-  useDisconnect: () => ({ disconnect: () => disconnectMock() })
+  useDisconnect: () => ({ disconnect: () => disconnectMock() }),
+  useEnsName: () => ({ data: undefined }),
+  useEnsAvatar: () => ({ data: undefined })
 }));
 
 describe('ProfileDropdown', () => {

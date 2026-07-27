@@ -11,7 +11,7 @@ import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagm
 import { useIsMounted } from '@/lib/useIsMounted';
 import { CopyAddress } from './CopyAddress';
 import { ProfileDropdown } from './ProfileDropdown';
-import { ThemeToggle } from './ThemeToggle';
+import { Avatar } from './Avatar';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -50,8 +50,9 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => disconnect()}
-                className="btn-outline"
+                className="btn-outline flex items-center gap-2"
               >
+                <Avatar address={address} size={20} />
                 {shortenAddress(address)}
               </button>
               <ProfileDropdown />
