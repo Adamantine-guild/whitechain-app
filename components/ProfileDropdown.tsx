@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDisconnect, useAccount } from 'wagmi';
+import { Avatar } from './Avatar';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -35,11 +36,12 @@ export function ProfileDropdown() {
     <div className="relative" ref={ref}>
       <button
         type="button"
-        className="btn-outline"
+        className="btn-outline flex items-center gap-2"
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
       >
+        <Avatar address={address as `0x${string}`} size={20} />
         {shortenAddress(address)}
       </button>
 
