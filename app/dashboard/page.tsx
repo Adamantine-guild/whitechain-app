@@ -6,6 +6,7 @@ import { TransactionHistorySection } from '@/components/TransactionHistorySectio
 import { TransactionSimulator } from '@/components/TransactionSimulator';
 import { CachedActivity } from '@/components/CachedActivity';
 import { SendModal } from '@/components/SendModal';
+import { PortfolioAssets } from '@/components/PortfolioAssets';
 
 export default function DashboardPage() {
   const [sendOpen, setSendOpen] = useState(false);
@@ -24,8 +25,7 @@ export default function DashboardPage() {
         </section>
 
         <section id="portfolio" className="card lg:col-span-2">
-          <h2 className="text-sm font-semibold text-gray-900">Portfolio</h2>
-          <p className="mt-2 text-sm text-gray-600">Connect a wallet to see your holdings.</p>
+          <PortfolioAssets />
           <button type="button" className="btn mt-3" onClick={() => setSendOpen(true)}>
             Send asset
           </button>
