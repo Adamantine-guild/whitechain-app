@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
 import { useIsMounted } from '@/lib/useIsMounted';
 import { CopyAddress } from './CopyAddress';
+import { ThemeToggle } from './ThemeToggle';
 import { ProfileDropdown } from './ProfileDropdown';
 import { Avatar } from './Avatar';
 
