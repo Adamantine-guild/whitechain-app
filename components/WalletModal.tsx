@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useConnect } from 'wagmi';
-import { CoinbaseIcon, GenericWalletIcon, MetaMaskIcon, WalletConnectIcon } from './icons';
+import { CoinbaseIcon, GenericWalletIcon, LedgerIcon, MetaMaskIcon, WalletConnectIcon } from './icons';
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -14,7 +14,8 @@ const CONNECTOR_ICONS: Record<string, (props: { className?: string }) => JSX.Ele
   metaMaskSDK: MetaMaskIcon,
   coinbaseWallet: CoinbaseIcon,
   walletConnect: WalletConnectIcon,
-  injected: GenericWalletIcon
+  injected: GenericWalletIcon,
+  ledgerWebUsb: LedgerIcon
 };
 
 function iconFor(connectorId: string) {
@@ -115,7 +116,15 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
 
         {error && (
           <p role="alert" className="mt-3 text-sm text-red-600">
-            {error.message.includes('User rejected') ? 'Connection request was rejected.' : error.message}
+            {error.message.includes('User rejected')
+              ? 'Connection request was rejected.'
+              : error.message.includes('unplugged') || error.message.includes('disconnected')
+                ? 'Your Ledger was unplugged. Reconnect it over USB and try again.'
+                : error.message.includes('open the Ethereum app')
+                  ? 'Please open the Ethereum app on your Ledger, then try again.'
+                  : error.message.includes('WebUSB')
+                    ? 'WebUSB is not available here. Use a Chromium-based browser over HTTPS or localhost.'
+                    : error.message}
           </p>
         )}
       </div>

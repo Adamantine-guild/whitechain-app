@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
+    "@ledgerhq/hw-app-eth": "^6.47.1",
+    "@ledgerhq/hw-transport-webusb": "^6.35.0",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-virtual": "^3.14.8",
     "clsx": "2.1.1",

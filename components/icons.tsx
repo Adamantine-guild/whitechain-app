@@ -42,6 +42,16 @@ export function GenericWalletIcon({ className }: { className?: string }) {
   );
 }
 
+export function LedgerIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <rect x="3" y="7" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
+      <rect x="6" y="10" width="9" height="5" rx="1" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="17.5" cy="12.5" r="1.2" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function CopyIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
