@@ -1,9 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
 import { CopyAddress } from './CopyAddress';
-import { WalletModal } from './WalletModal';
+
+// Lazily load the wallet-selection modal. Its connector code (incl. any
+// WalletConnect wiring) is only pulled into the client bundle the first time
+// a user actually opens the connect dialog, keeping it out of the initial
+// route payload.
+const WalletModal = dynamic(() => import('./WalletModal').then((m) => m.WalletModal), {
+  ssr: false
+});
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
