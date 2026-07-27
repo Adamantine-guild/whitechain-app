@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useChainId } from 'wagmi';
 import { HistoryTable, type TransactionRow } from './HistoryTable';
 
 const TYPES = ['Send', 'Receive', 'Swap', 'Stake', 'Unstake'];
@@ -20,13 +21,14 @@ function buildMockRows(count: number): TransactionRow[] {
 
 export function TransactionHistorySection() {
   const rows = useMemo(() => buildMockRows(50_000), []);
+  const chainId = useChainId();
 
   return (
     <section id="history" className="card lg:col-span-2">
       <h2 className="text-sm font-semibold text-gray-900">Transaction history</h2>
       <p className="mt-1 text-xs text-gray-500">{rows.length.toLocaleString()} transactions (mock data)</p>
       <div className="mt-3">
-        <HistoryTable rows={rows} />
+        <HistoryTable rows={rows} chainId={chainId} />
       </div>
     </section>
   );
