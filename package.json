@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build | tee .next/build-output.log",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "size": "node scripts/check-bundle-budget.mjs",
+    "test:bundle": "node --test scripts/check-bundle-budget.test.mjs"
     "test": "vitest run"
   },
   "dependencies": {
