@@ -31,6 +31,12 @@ export function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
      <header className="border-b border-gray-200 bg-white">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -45,6 +51,13 @@ export function Navbar() {
             <>
               <BalanceDisplay />
 
+              <button
+                type="button"
+                onClick={() => disconnect()}
+                className="btn-outline"
+              >
+                {shortenAddress(address)}
+              </button>
               <ProfileDropdown />
             </>
           ) : (
