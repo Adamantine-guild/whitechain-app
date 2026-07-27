@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { getExplorerLink } from '@/lib/explorer';
 
 export interface TransactionRow {
   hash: string;
@@ -10,7 +11,7 @@ export interface TransactionRow {
   note?: string;
 }
 
-export function HistoryTable({ rows }: { rows: TransactionRow[] }) {
+export function HistoryTable({ rows, chainId }: { rows: TransactionRow[]; chainId: number }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const virtualizer = useVirtualizer({
@@ -46,9 +47,15 @@ export function HistoryTable({ rows }: { rows: TransactionRow[] }) {
               }}
               className="grid grid-cols-[1fr_120px_140px] items-start gap-2 border-b border-gray-100 px-4 py-2 text-sm"
             >
-              <span className="truncate font-mono text-gray-700" title={row.hash}>
+              <a
+                href={getExplorerLink(row.hash, 'tx', chainId)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={row.hash}
+                className="truncate font-mono text-blue-600 hover:underline"
+              >
                 {row.hash}
-              </span>
+              </a>
               <span className="text-gray-600">{row.type}</span>
               <span className="text-right font-medium text-gray-900">{row.amount}</span>
               {row.note && <span className="col-span-3 whitespace-pre-wrap text-xs text-gray-500">{row.note}</span>}
