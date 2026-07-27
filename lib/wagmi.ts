@@ -1,8 +1,14 @@
-import { createConfig, http } from 'wagmi';
+import { createConfig } from 'wagmi';
 import { mainnet, sepolia } from 'wagmi/chains';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
+import { createTransport, parseRpcUrls } from './transport';
 
 const walletConnectProjectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID ?? '';
+
+const mainnetRpcUrls = parseRpcUrls(
+  process.env.NEXT_PUBLIC_MAINNET_RPC_URLS ?? process.env.NEXT_PUBLIC_RPC_URL
+);
+const sepoliaRpcUrls = parseRpcUrls(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URLS);
 
 export const wagmiConfig = createConfig({
   chains: [mainnet, sepolia],
@@ -14,7 +20,7 @@ export const wagmiConfig = createConfig({
       : [])
   ],
   transports: {
-    [mainnet.id]: http(process.env.NEXT_PUBLIC_RPC_URL || undefined),
-    [sepolia.id]: http()
+    [mainnet.id]: createTransport(mainnetRpcUrls),
+    [sepolia.id]: createTransport(sepoliaRpcUrls)
   }
 });
