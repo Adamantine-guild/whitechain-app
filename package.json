@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "size": "node scripts/check-bundle-budget.mjs",
-    "test:bundle": "node --test scripts/check-bundle-budget.test.mjs"
+    "test:bundle": "node --test scripts/check-bundle-budget.test.mjs",
     "test": "vitest run"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "eslint-config-next": "14.2.5",
     "postcss": "8.4.33",
     "tailwindcss": "3.4.1",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "vitest": "^2.1.9"
   },
