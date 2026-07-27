@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { TransactionHistorySection } from '@/components/TransactionHistorySection';
 import { TransactionSimulator } from '@/components/TransactionSimulator';
+import { CachedActivity } from '@/components/CachedActivity';
 import { SendModal } from '@/components/SendModal';
 
 export default function DashboardPage() {
@@ -31,6 +32,8 @@ export default function DashboardPage() {
         </section>
 
         <TransactionSimulator />
+
+        <CachedActivity />
 
         <TransactionHistorySection />
       </div>
