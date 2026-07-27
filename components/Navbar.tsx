@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import { Menu, X } from "lucide-react";
-import { useAccount, useDisconnect } from 'wagmi';
 import { WalletModal } from './WalletModal';
 import MobileNav from './MobileNav';
 import BalanceDisplay from './BalanceDisplay';
 
+import dynamic from 'next/dynamic';
+import { useAccount, useBalance, useDisconnect, useWatchBlockNumber } from 'wagmi';
+import { useIsMounted } from '@/lib/useIsMounted';
+import { CopyAddress } from './CopyAddress';
+import { ProfileDropdown } from './ProfileDropdown';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -16,6 +20,16 @@ export function Navbar() {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // Wagmi's connection state is read from localStorage on the client, so it
+  // can differ from the server's initial render. Wait for mount before
+  // trusting isConnected, otherwise React throws a hydration mismatch.
+  const isMounted = useIsMounted();
+
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -44,6 +58,7 @@ export function Navbar() {
               >
                 {shortenAddress(address)}
               </button>
+              <ProfileDropdown />
             </>
           ) : (
             <button
