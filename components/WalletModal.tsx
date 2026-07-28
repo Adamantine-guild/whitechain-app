@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useConnect } from 'wagmi';
 import { CoinbaseIcon, GenericWalletIcon, LedgerIcon, MetaMaskIcon, WalletConnectIcon } from './icons';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -31,17 +32,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
     }
   });
   const dialogRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  useModalA11y(isOpen, onClose, dialogRef);
 
   useEffect(() => {
     if (isOpen) reset();
@@ -70,6 +61,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
         aria-modal="true"
         aria-labelledby="wallet-modal-title"
         className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl"
+        tabIndex={-1}
       >
         <div className="flex items-center justify-between">
           <h2 id="wallet-modal-title" className="text-base font-semibold text-gray-900">

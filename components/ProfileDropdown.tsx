@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDisconnect, useAccount } from 'wagmi';
 import { Avatar } from './Avatar';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -19,6 +20,8 @@ export function ProfileDropdown() {
   const { disconnect } = useDisconnect();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  useModalA11y(open, () => setOpen(false), ref);
 
   // Close the menu on outside click.
   useEffect(() => {
