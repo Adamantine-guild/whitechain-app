@@ -37,7 +37,7 @@ test.describe('Vault Dashboard Responsive Layout & Interactions', () => {
 
     // Verify touch target size of input and confirm button is >= 48px height
     const inputField = inlineForm.locator('input[type="number"]');
-    const confirmBtn = inlineForm.getByRole('submit', { name: 'Confirm Stake' }).or(inlineForm.getByRole('button', { name: 'Confirm Stake' }));
+    const confirmBtn = inlineForm.getByRole('button', { name: 'Confirm Stake' });
 
     const inputBBox = await inputField.boundingBox();
     const btnBBox = await confirmBtn.boundingBox();
