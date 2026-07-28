@@ -12,6 +12,7 @@ import { useIsMounted } from '@/lib/useIsMounted';
 import { CopyAddress } from './CopyAddress';
 import { ThemeToggle } from './ThemeToggle';
 import { ProfileDropdown } from './ProfileDropdown';
+import { SlippageSettings } from './SlippageSettings';
 import { Avatar } from './Avatar';
 
 function shortenAddress(address: string) {
@@ -43,6 +44,7 @@ export function Navbar() {
 
         {/* Desktop Wallet Actions */}
         <div className="hidden md:flex items-center gap-3">
+          <SlippageSettings />
           <ThemeToggle />
           {isConnected && address ? (
             <>
