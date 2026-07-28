@@ -7,7 +7,8 @@ const NAV_ITEMS = [
   { label: 'Overview', href: '#overview' },
   { label: 'Staking', href: '#staking' },
   { label: 'Governance', href: '#governance' },
-  { label: 'Portfolio', href: '#portfolio' }
+  { label: 'Portfolio', href: '#portfolio' },
+  { label: 'Plugins', href: '#plugins' }
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
