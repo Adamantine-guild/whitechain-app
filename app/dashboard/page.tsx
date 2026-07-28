@@ -7,6 +7,7 @@ import { TransactionSimulator } from '@/components/TransactionSimulator';
 import { CachedActivity } from '@/components/CachedActivity';
 import { SendModal } from '@/components/SendModal';
 import { PortfolioAssets } from '@/components/PortfolioAssets';
+import { VaultTable } from '@/components/vaults/VaultTable';
 
 export default function DashboardPage() {
   const [sendOpen, setSendOpen] = useState(false);
@@ -14,9 +15,9 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <section id="staking" className="card">
-          <h2 className="text-sm font-semibold text-gray-900">Staking</h2>
-          <p className="mt-2 text-sm text-gray-600">No active stakes yet.</p>
+        <section id="staking" className="card lg:col-span-2">
+          <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-4">Vault Staking Dashboard</h2>
+          <VaultTable />
         </section>
 
         <section id="governance" className="card">
