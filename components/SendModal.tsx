@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useBalance, useGasPrice, useChainId, useConfig } from 'wagmi';
 import { buildSendSchema, type SendFormValues } from '@/lib/validation/sendSchema';
 import { notifyTxPending, notifyTxSuccess, notifyTxError } from '@/components/TxToasts';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 
 /** Safety multiplier applied to the estimated gas cost reserved by "Max" (#19). */
 const GAS_BUFFER_MULTIPLIER = 2n;
@@ -33,6 +34,9 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
 
   const balanceWei = balance ? BigInt(balance.value.toString()) : 0n;
   const schema = React.useMemo(() => buildSendSchema(balanceWei), [balanceWei]);
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useModalA11y(isOpen, onClose, dialogRef);
 
   const {
     register,
@@ -152,8 +156,10 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         className="card w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
       >
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">Send asset</h2>
