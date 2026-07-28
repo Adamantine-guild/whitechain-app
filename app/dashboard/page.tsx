@@ -9,6 +9,8 @@ import { SendModal } from '@/components/SendModal';
 import { PortfolioAssets } from '@/components/PortfolioAssets';
 import { PluginGrid } from '@/components/dashboard/PluginGrid';
 
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+
 export default function DashboardPage() {
   const [sendOpen, setSendOpen] = useState(false);
 
@@ -17,7 +19,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section id="staking" className="card">
           <h2 className="text-sm font-semibold text-gray-900">Staking</h2>
-          <p className="mt-2 text-sm text-gray-600">No active stakes yet.</p>
+          <ErrorBoundary>
+            <p className="mt-2 text-sm text-gray-600">No active stakes yet.</p>
+          </ErrorBoundary>
         </section>
 
         <section id="governance" className="card">
@@ -26,19 +30,27 @@ export default function DashboardPage() {
         </section>
 
         <section id="portfolio" className="card lg:col-span-2">
-          <PortfolioAssets />
+          <ErrorBoundary>
+            <PortfolioAssets />
+          </ErrorBoundary>
           <button type="button" className="btn mt-3" onClick={() => setSendOpen(true)}>
             Send asset
           </button>
         </section>
 
-        <TransactionSimulator />
+        <ErrorBoundary>
+          <TransactionSimulator />
+        </ErrorBoundary>
 
-        <CachedActivity />
+        <ErrorBoundary>
+          <CachedActivity />
+        </ErrorBoundary>
 
         {/* useSearchParams (page state, #15) requires a Suspense boundary. */}
         <Suspense fallback={null}>
-          <TransactionHistorySection />
+          <ErrorBoundary>
+            <TransactionHistorySection />
+          </ErrorBoundary>
         </Suspense>
 
         {/*
@@ -46,7 +58,9 @@ export default function DashboardPage() {
          * registered, so existing layout is unaffected by default.
          * Plugins register themselves via usePluginSDK().registerPlugin().
          */}
-        <PluginGrid />
+        <ErrorBoundary>
+          <PluginGrid />
+        </ErrorBoundary>
       </div>
 
       <SendModal isOpen={sendOpen} onClose={() => setSendOpen(false)} />
