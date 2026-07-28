@@ -38,7 +38,7 @@ const FAKE_ADDR = '0x1234567890123456789012345678901234567890' as Address;
 
 function makeConnector() {
   // Cast through unknown because createConnector expects wagmi's config shape.
-  const fn = ledgerConnector() as unknown as (config: any) => any;
+  const fn = ledgerConnector() as unknown as (args?: any) => any;
   return fn({ chains: [{ id: 1 }] });
 }
 

@@ -3,8 +3,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAccount, useBalance, useGasPrice } from 'wagmi';
+import { useAccount, useBalance, useGasPrice, useChainId, useConfig } from 'wagmi';
 import { buildSendSchema, type SendFormValues } from '@/lib/validation/sendSchema';
+import { notifyTxPending, notifyTxSuccess, notifyTxError } from '@/components/TxToasts';
 
 /** Safety multiplier applied to the estimated gas cost reserved by "Max" (#19). */
 const GAS_BUFFER_MULTIPLIER = 2n;
@@ -27,6 +28,8 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
   const { address } = useAccount();
   const { data: balance, isLoading: balanceLoading } = useBalance({ address });
   const { data: gasPrice } = useGasPrice({ query: { refetchInterval: 15_000 } });
+  const chainId = useChainId();
+  const wagmiConfigChain = useConfig().chains.find((c) => c.id === chainId);
 
   const balanceWei = balance ? BigInt(balance.value.toString()) : 0n;
   const schema = React.useMemo(() => buildSendSchema(balanceWei), [balanceWei]);
@@ -103,8 +106,9 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
       setError('to', { message: 'No wallet detected. Connect a wallet to send.' });
       return;
     }
+    const toastId = notifyTxPending();
     try {
-      await provider.request({
+      const txHash = (await provider.request({
         method: 'eth_sendTransaction',
         params: [
           {
@@ -114,9 +118,27 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
             gas: `0x${BigInt(values.gasLimit).toString(16)}`
           }
         ]
-      });
+      })) as string | undefined;
+
+      if (toastId) {
+        // Replace the pending loader with the resolved success toast.
+        import('sonner').then(({ toast }) => toast.dismiss(toastId));
+      }
+
+      if (txHash && txHash !== '0x0') {
+        notifyTxSuccess(txHash as `0x${string}`, wagmiConfigChain);
+      } else {
+        // Some wallets resolve without a hash (e.g. hardware approvals); still
+        // surface a neutral success so the user isn't left without feedback.
+        notifyTxSuccess('0x0' as `0x${string}`, wagmiConfigChain);
+      }
       onClose();
-    } catch {
+    } catch (err) {
+      const message =
+        err && typeof err === 'object' && 'message' in err
+          ? (err as { message?: string }).message
+          : 'The transaction was rejected or failed.';
+      notifyTxError(message ?? 'The transaction was rejected or failed.');
       // Wallet surfaces the real error; keep the modal open and non-blocking.
     }
   });

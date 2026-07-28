@@ -24,7 +24,9 @@ vi.mock('wagmi', () => ({
     isLoading: false
   }),
   // No gas price → no reserve is subtracted, so maxSendableWei == balanceWei.
-  useGasPrice: () => ({ data: undefined })
+  useGasPrice: () => ({ data: undefined }),
+  useChainId: () => 1,
+  useConfig: () => ({ chains: [{ id: 1 }] }),
 }));
 
 describe('SendModal', () => {
