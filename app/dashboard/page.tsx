@@ -7,6 +7,7 @@ import { TransactionSimulator } from '@/components/TransactionSimulator';
 import { CachedActivity } from '@/components/CachedActivity';
 import { SendModal } from '@/components/SendModal';
 import { PortfolioAssets } from '@/components/PortfolioAssets';
+import { VaultTable } from '@/components/vaults/VaultTable';
 import { PluginGrid } from '@/components/dashboard/PluginGrid';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
