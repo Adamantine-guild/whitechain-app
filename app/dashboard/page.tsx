@@ -7,6 +7,7 @@ import { TransactionSimulator } from '@/components/TransactionSimulator';
 import { CachedActivity } from '@/components/CachedActivity';
 import { SendModal } from '@/components/SendModal';
 import { PortfolioAssets } from '@/components/PortfolioAssets';
+import { PluginGrid } from '@/components/dashboard/PluginGrid';
 
 export default function DashboardPage() {
   const [sendOpen, setSendOpen] = useState(false);
@@ -39,6 +40,13 @@ export default function DashboardPage() {
         <Suspense fallback={null}>
           <TransactionHistorySection />
         </Suspense>
+
+        {/*
+         * Community plugin widgets — renders nothing when no plugins are
+         * registered, so existing layout is unaffected by default.
+         * Plugins register themselves via usePluginSDK().registerPlugin().
+         */}
+        <PluginGrid />
       </div>
 
       <SendModal isOpen={sendOpen} onClose={() => setSendOpen(false)} />
