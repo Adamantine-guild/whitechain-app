@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCachedLogs, type DecodedLogInput } from '@/lib/database/useCachedLogs';
 import { MemoryCache } from '@/lib/database/db';
 
@@ -11,6 +12,7 @@ import { MemoryCache } from '@/lib/database/db';
  * real `getLogs`/decoder when an event source exists.
  */
 export function CachedActivity() {
+  const { t } = useTranslation();
   // A stable in-memory store so the demo survives re-renders in this session.
   const storeRef = React.useRef(new MemoryCache());
 
@@ -43,10 +45,10 @@ export function CachedActivity() {
 
   return (
     <section id="cached-activity" className="card lg:col-span-2">
-      <h2 className="text-sm font-semibold text-gray-900">Cached activity</h2>
+      <h2 className="text-sm font-semibold text-gray-900">{t('activity.cachedActivity')}</h2>
       <p className="mt-1 text-xs text-gray-500">
-        {fromCache ? 'Served from IndexedDB cache (instant / offline).' : loading ? 'Loading…' : 'Backfilled from RPC.'}
-        {backfilledAt ? ` Last sync: ${new Date(backfilledAt).toLocaleTimeString()}.` : ''}
+        {fromCache ? t('activity.fromCache') : loading ? t('common.loading') : t('activity.backfilled')}
+        {backfilledAt ? ` ${t('activity.lastSync')}: ${new Date(backfilledAt).toLocaleTimeString()}.` : ''}
       </p>
       <ul className="mt-3 space-y-1 text-sm text-gray-700">
         {logs.slice(0, 10).map((l) => (

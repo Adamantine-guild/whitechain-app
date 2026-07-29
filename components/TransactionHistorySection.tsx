@@ -3,6 +3,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useChainId } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 import { HistoryTable, type TransactionRow } from './HistoryTable';
 
 const TYPES = ['Send', 'Receive', 'Swap', 'Stake', 'Unstake'];
@@ -30,6 +31,7 @@ function parsePage(raw: string | null): number {
 }
 
 export function TransactionHistorySection() {
+  const { t } = useTranslation();
   const allRows = useMemo(() => buildMockRows(50_000), []);
   const chainId = useChainId();
   const router = useRouter();
@@ -61,9 +63,9 @@ export function TransactionHistorySection() {
 
   return (
     <section id="history" className="card lg:col-span-2">
-      <h2 className="text-sm font-semibold text-gray-900">Transaction history</h2>
+      <h2 className="text-sm font-semibold text-gray-900">{t('history.title')}</h2>
       <p className="mt-1 text-xs text-gray-500">
-        {allRows.length.toLocaleString()} transactions (mock data) — page {page} of {totalPages}
+        {allRows.length.toLocaleString()} {t('history.transactionsSummary', { page, totalPages })}
       </p>
       <div className="mt-3">
         <HistoryTable rows={pageRows} chainId={chainId} />
@@ -75,10 +77,10 @@ export function TransactionHistorySection() {
           disabled={page <= 1}
           className="btn-outline disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Prev
+          {t('history.prev')}
         </button>
         <span className="text-xs text-gray-500">
-          Page {page} / {totalPages}
+          {t('history.page', { page, totalPages })}
         </span>
         <button
           type="button"
@@ -86,7 +88,7 @@ export function TransactionHistorySection() {
           disabled={page >= totalPages}
           className="btn-outline disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Next
+          {t('history.next')}
         </button>
       </div>
     </section>

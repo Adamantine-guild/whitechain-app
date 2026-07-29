@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useEnsAvatar, useEnsName } from 'wagmi';
 import { mainnet } from 'wagmi/chains';
+import { ImageWithFallback } from '@/components/ImageWithFallback';
 
 export interface AvatarProps {
   address?: `0x${string}`;
@@ -48,8 +49,6 @@ function BlockyFallback({ address, size }: { address?: string; size: number }) {
  * avatar record, or the image fails to load.
  */
 export function Avatar({ address, size = 32, className }: AvatarProps) {
-  const [imgErrored, setImgErrored] = useState(false);
-
   const { data: ensName } = useEnsName({
     address,
     chainId: mainnet.id,
@@ -70,24 +69,25 @@ export function Avatar({ address, size = 32, className }: AvatarProps) {
     }
   });
 
-  if (!avatarUrl || imgErrored) {
+  const fallback = <BlockyFallback address={address} size={size} />;
+
+  if (!avatarUrl) {
     return (
       <span className={className}>
-        <BlockyFallback address={address} size={size} />
+        {fallback}
       </span>
     );
   }
 
   return (
     <span className={className}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- external, arbitrary ENS-hosted URL */}
-      <img
+      <ImageWithFallback
         src={avatarUrl}
         alt={ensName ? `${ensName} avatar` : 'ENS avatar'}
         width={size}
         height={size}
         className="inline-block shrink-0 rounded-full object-cover"
-        onError={() => setImgErrored(true)}
+        fallback={fallback}
       />
     </span>
   );

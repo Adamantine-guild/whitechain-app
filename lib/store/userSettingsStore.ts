@@ -1,26 +1,168 @@
 /**
  * User Settings Store
  *
- * Async persistent store for user preferences (theme, custom token lists,
- * UI preferences). Data is persisted to IndexedDB via the encryption layer.
+ * This file exports two complementary stores:
  *
- * On first load a one-time migration moves legacy localStorage entries
- * (e.g. 'whitechain-theme') into IndexedDB and removes them from
- * localStorage so the app never reads from localStorage again.
+ * 1. `useUserSettingsStore` — Zustand store for UI settings that need to be
+ *    synchronously available to React components (e.g. slippage tolerance).
+ *    Persisted via Zustand's `persist` middleware.
  *
- * Usage:
+ * 2. `UserSettingsStore` / `getUserSettingsStore` — Async IDB-backed store
+ *    for sensitive or large preferences (theme, custom token lists, arbitrary
+ *    flags). Data is persisted to IndexedDB via the encryption layer in
+ *    `lib/store/persistence/idb.ts`. On first load a one-time migration moves
+ *    legacy localStorage entries into IndexedDB.
+ *
+ * Usage — slippage (Zustand, synchronous):
  * ```ts
- * const store = getUserSettingsStore();
- * const theme = await store.getTheme();   // 'light' | 'dark' | undefined
- * await store.setTheme('dark');
+ * import { useUserSettingsStore } from '@/lib/store/userSettingsStore';
+ * const slippage = useUserSettingsStore((s) => s.slippage);
+ * const setSlippage = useUserSettingsStore((s) => s.setSlippage);
+ * ```
+ *
+ * Usage — theme / tokens (IDB, async):
+ * ```ts
+ * import { getUserSettingsStore } from '@/lib/store/userSettingsStore';
+ * const theme = await getUserSettingsStore().getTheme();
+ * await getUserSettingsStore().setTheme('dark');
  * ```
  */
 
+'use client';
+
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import {
   getPersistenceStore,
   migrateFromLocalStorage,
   type IdbPersistenceStore,
 } from './persistence/idb';
+
+// ===========================================================================
+// Part 1 — Zustand slippage store (synchronous, for UI components)
+// ===========================================================================
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+/** Slippage tolerance expressed as a percentage (e.g. 0.5 = 0.5 %). */
+export type SlippageValue = number;
+
+export interface UserSettingsState {
+  /** Current slippage tolerance in percent. Default 0.5 %. */
+  slippage: SlippageValue;
+  /** Update the slippage tolerance. Passed value is clamped to [0, 50]. */
+  setSlippage: (value: SlippageValue) => void;
+}
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+
+export const DEFAULT_SLIPPAGE: SlippageValue = 0.5;
+
+export const PRESET_SLIPPAGE_VALUES: SlippageValue[] = [0.1, 0.5, 1.0];
+
+/** Anything above this is considered risky (sandwich-attack territory). */
+export const SLIPPAGE_WARNING_THRESHOLD = 5;
+
+/** Hard upper bound — values above this are rejected by validation. */
+export const SLIPPAGE_MAX = 50;
+
+/** Hard lower bound — negative values are rejected. */
+export const SLIPPAGE_MIN = 0;
+
+// ---------------------------------------------------------------------------
+// Zustand store
+// ---------------------------------------------------------------------------
+
+/**
+ * Global user settings store, persisted to localStorage under
+ * `whitechain-user-settings`.
+ *
+ * Slippage is a non-sensitive numeric preference that must be synchronously
+ * available to React components, so Zustand + persist middleware is the right
+ * tool here. For sensitive or large data (theme, token lists) use
+ * `getUserSettingsStore()` instead.
+ */
+export const useUserSettingsStore = create<UserSettingsState>()(
+  persist(
+    (set) => ({
+      slippage: DEFAULT_SLIPPAGE,
+      setSlippage: (value: SlippageValue) =>
+        set({
+          slippage: Math.max(SLIPPAGE_MIN, Math.min(SLIPPAGE_MAX, value))
+        })
+    }),
+    {
+      name: 'whitechain-user-settings'
+    }
+  )
+);
+
+// ---------------------------------------------------------------------------
+// Validation helpers (framework-agnostic, easy to test)
+// ---------------------------------------------------------------------------
+
+export type SlippageValidationResult =
+  | { valid: true }
+  | { valid: false; message: string };
+
+/**
+ * Validates a raw slippage input string.
+ *
+ * Returns `{ valid: true }` if the value is a non-negative number ≤ 50.
+ * Otherwise returns `{ valid: false, message }` with a human-readable error.
+ */
+export function validateSlippageInput(raw: string): SlippageValidationResult {
+  if (raw === '') {
+    return { valid: false, message: 'Slippage cannot be empty.' };
+  }
+
+  const trimmed = raw.trim();
+
+  // Allow trailing decimal point during editing (e.g. "5.") but not bare ".".
+  if (trimmed === '.' || trimmed === '') {
+    return { valid: false, message: 'Enter a valid number.' };
+  }
+
+  // Reject multiple dots, leading zeros that aren't "0.x", etc.
+  if (!/^-?\d+(\.\d*)?$/.test(trimmed)) {
+    return { valid: false, message: 'Enter a valid number.' };
+  }
+
+  const num = Number(trimmed);
+
+  if (Number.isNaN(num)) {
+    return { valid: false, message: 'Enter a valid number.' };
+  }
+
+  if (num < SLIPPAGE_MIN) {
+    return { valid: false, message: 'Slippage cannot be negative.' };
+  }
+
+  if (num > SLIPPAGE_MAX) {
+    return {
+      valid: false,
+      message: `Slippage cannot exceed ${SLIPPAGE_MAX} %.`
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Returns `true` if the given slippage value is high enough to warrant a
+ * sandwich-attack warning.
+ */
+export function isSlippageRisky(value: SlippageValue): boolean {
+  return value > SLIPPAGE_WARNING_THRESHOLD && value <= SLIPPAGE_MAX;
+}
+
+// ===========================================================================
+// Part 2 — IDB-backed async store (theme, custom tokens, preferences)
+// ===========================================================================
 
 // ---------------------------------------------------------------------------
 // Types
@@ -194,9 +336,9 @@ export class UserSettingsStore {
 let _instance: UserSettingsStore | null = null;
 
 /**
- * Returns the application-wide user settings store.
- * Pass an override to inject a test double (uses a fresh instance when override
- * is provided, so tests remain isolated).
+ * Returns the application-wide IDB-backed user settings store.
+ * Pass an override to inject a test double (uses a fresh instance when
+ * override is provided, so tests remain isolated).
  */
 export function getUserSettingsStore(override?: IdbPersistenceStore): UserSettingsStore {
   if (override) return new UserSettingsStore(override);

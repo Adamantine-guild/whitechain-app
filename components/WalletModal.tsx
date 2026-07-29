@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useConnect } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 import { CoinbaseIcon, GenericWalletIcon, LedgerIcon, MetaMaskIcon, WalletConnectIcon } from './icons';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -23,6 +25,7 @@ function iconFor(connectorId: string) {
 }
 
 export function WalletModal({ isOpen, onClose }: WalletModalProps) {
+  const { t } = useTranslation();
   const [pendingConnectorUid, setPendingConnectorUid] = useState<string | null>(null);
   const { connectors, connect, isPending, error, reset } = useConnect({
     mutation: {
@@ -31,17 +34,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
     }
   });
   const dialogRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  useModalA11y(isOpen, onClose, dialogRef);
 
   useEffect(() => {
     if (isOpen) reset();
@@ -70,15 +63,16 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
         aria-modal="true"
         aria-labelledby="wallet-modal-title"
         className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl"
+        tabIndex={-1}
       >
         <div className="flex items-center justify-between">
           <h2 id="wallet-modal-title" className="text-base font-semibold text-gray-900">
-            Connect a wallet
+            {t('wallet.connectWallet')}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t('common.close')}
             className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
           >
             ✕
@@ -117,13 +111,13 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
         {error && (
           <p role="alert" className="mt-3 text-sm text-red-600">
             {error.message.includes('User rejected')
-              ? 'Connection request was rejected.'
+              ? t('wallet.connectionRejected')
               : error.message.includes('unplugged') || error.message.includes('disconnected')
-                ? 'Your Ledger was unplugged. Reconnect it over USB and try again.'
+                ? t('wallet.ledgerUnplugged')
                 : error.message.includes('open the Ethereum app')
-                  ? 'Please open the Ethereum app on your Ledger, then try again.'
+                  ? t('wallet.ledgerOpenApp')
                   : error.message.includes('WebUSB')
-                    ? 'WebUSB is not available here. Use a Chromium-based browser over HTTPS or localhost.'
+                    ? t('wallet.webUsbUnavailable')
                     : error.message}
           </p>
         )}

@@ -2,7 +2,6 @@ import { createConnector } from 'wagmi';
 import { type CreateConnectorFn } from 'wagmi';
 import Eth from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
-import type Transport from '@ledgerhq/hw-transport';
 import type { Address, TransactionSerializable } from 'viem';
 import { serializeTransaction } from 'viem';
 
@@ -59,8 +58,13 @@ export function toLedgerError(err: unknown): LedgerConnectionError {
   return new LedgerConnectionError('UNKNOWN', msg || 'Failed to connect to Ledger.');
 }
 
+/** Minimal transport type — avoids pulling in @ledgerhq/hw-transport just for types. */
+interface TransportLike {
+  close(): Promise<void>;
+}
+
 interface LedgerProvider {
-  transport: Transport;
+  transport: TransportLike;
   eth: Eth;
   path: string;
 }

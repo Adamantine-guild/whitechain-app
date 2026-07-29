@@ -1,9 +1,14 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
+
 export default function HomePage() {
+  const { t } = useTranslation();
   return (
     <div className="card">
-      <h1 className="text-xl font-semibold text-gray-900">Welcome to WhiteChain</h1>
+      <h1 className="text-xl font-semibold text-gray-900">{t('home.welcome')}</h1>
       <p className="mt-2 text-sm text-gray-600">
-        Connect your wallet from the navbar to get started.
+        {t('home.connectPrompt')}
       </p>
     </div>
   );

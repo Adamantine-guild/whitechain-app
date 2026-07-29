@@ -2,9 +2,14 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useAccount, useBalance, useGasPrice } from 'wagmi';
+import { useAccount, useBalance, useGasPrice, useChainId, useConfig } from 'wagmi';
 import { buildSendSchema, type SendFormValues } from '@/lib/validation/sendSchema';
+import { notifyTxPending, notifyTxSuccess, notifyTxError } from '@/components/TxToasts';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
+import { useTransactionReceiptWatcher } from '@/lib/hooks/useTransactionReceiptWatcher';
+import type { Hash } from 'viem';
 
 /** Safety multiplier applied to the estimated gas cost reserved by "Max" (#19). */
 const GAS_BUFFER_MULTIPLIER = 2n;
@@ -24,12 +29,30 @@ function getInjectedProvider(): Eip1193Provider | null {
 }
 
 export function SendModal({ isOpen, onClose }: SendModalProps) {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data: balance, isLoading: balanceLoading } = useBalance({ address });
   const { data: gasPrice } = useGasPrice({ query: { refetchInterval: 15_000 } });
+  const chainId = useChainId();
+  const wagmiConfigChain = useConfig().chains.find((c) => c.id === chainId);
+
+  // Track the last submitted transaction for optimistic UI updates.
+  // Reset when the modal closes.
+  const [lastTxHash, setLastTxHash] = useState<Hash | undefined>(undefined);
+  const [lastTxAmount, setLastTxAmount] = useState<bigint | undefined>(undefined);
+
+  // Watch for the transaction receipt and update the optimistic store.
+  useTransactionReceiptWatcher(
+    address as `0x${string}` | undefined,
+    lastTxHash,
+    lastTxAmount
+  );
 
   const balanceWei = balance ? BigInt(balance.value.toString()) : 0n;
   const schema = React.useMemo(() => buildSendSchema(balanceWei), [balanceWei]);
+
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useModalA11y(isOpen, onClose, dialogRef);
 
   const {
     register,
@@ -92,6 +115,8 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
     if (!isOpen) {
       reset();
       setPercent(0);
+      setLastTxHash(undefined);
+      setLastTxAmount(undefined);
     }
   }, [isOpen, reset]);
 
@@ -100,11 +125,12 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
   const onSubmit = handleSubmit(async (values) => {
     const provider = getInjectedProvider();
     if (!provider) {
-      setError('to', { message: 'No wallet detected. Connect a wallet to send.' });
+      setError('to', { message: t('send.noWallet') });
       return;
     }
+    const toastId = notifyTxPending();
     try {
-      await provider.request({
+      const txHash = (await provider.request({
         method: 'eth_sendTransaction',
         params: [
           {
@@ -114,9 +140,30 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
             gas: `0x${BigInt(values.gasLimit).toString(16)}`
           }
         ]
-      });
+      })) as string | undefined;
+
+      if (toastId) {
+        // Replace the pending loader with the resolved success toast.
+        import('sonner').then(({ toast }) => toast.dismiss(toastId));
+      }
+
+      if (txHash && txHash !== '0x0') {
+        notifyTxSuccess(txHash as `0x${string}`, wagmiConfigChain);
+        // Record the optimistic deduction so the UI updates immediately.
+        setLastTxHash(txHash as Hash);
+        setLastTxAmount(BigInt(values.amount));
+      } else {
+        // Some wallets resolve without a hash (e.g. hardware approvals); still
+        // surface a neutral success so the user isn't left without feedback.
+        notifyTxSuccess('0x0' as `0x${string}`, wagmiConfigChain);
+      }
       onClose();
-    } catch {
+    } catch (err) {
+      const message =
+        err && typeof err === 'object' && 'message' in err
+          ? (err as { message?: string }).message
+          : 'The transaction was rejected or failed.';
+      notifyTxError(message ?? t('send.txRejected'));
       // Wallet surfaces the real error; keep the modal open and non-blocking.
     }
   });
@@ -125,32 +172,34 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Send asset"
+      aria-label={t('send.sendAsset')}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         className="card w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
+        tabIndex={-1}
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-900">Send asset</h2>
-          <button type="button" className="text-gray-500" onClick={onClose} aria-label="Close">
+          <h2 className="text-sm font-semibold text-gray-900">{t('send.sendAsset')}</h2>
+          <button type="button" className="text-gray-500" onClick={onClose} aria-label={t('common.close')}>
             ✕
           </button>
         </div>
 
         <p className="mt-1 text-xs text-gray-500">
-          Balance: {balanceLoading ? '…' : balance ? `${balance.formatted} ${balance.symbol}` : '0'}
+          {t('send.balance')}: {balanceLoading ? '…' : balance ? `${balance.formatted} ${balance.symbol}` : '0'}
         </p>
 
         <form className="mt-4 flex flex-col gap-3" onSubmit={onSubmit} noValidate>
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-gray-700">Recipient address</span>
+            <span className="text-gray-700">{t('send.recipientAddress')}</span>
             <input
               {...register('to')}
               placeholder="0x…"
-              aria-label="Recipient address"
+              aria-label={t('send.recipientAddress')}
               className="rounded border border-gray-300 px-3 py-2 font-mono text-sm"
             />
             {errors.to && (
@@ -162,20 +211,20 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
 
           <label className="flex flex-col gap-1 text-sm">
             <span className="flex items-center justify-between text-gray-700">
-              Amount (wei)
+              {t('send.amountWei')}
               <button
                 type="button"
                 onClick={handleMax}
                 disabled={maxSendableWei <= 0n}
                 className="text-xs font-semibold text-blue-600 hover:underline disabled:cursor-not-allowed disabled:text-gray-400 disabled:no-underline"
               >
-                Max
+                {t('common.max')}
               </button>
             </span>
             <input
               {...register('amount')}
               placeholder="0"
-              aria-label="Amount in wei"
+              aria-label={t('send.amountWei')}
               className="rounded border border-gray-300 px-3 py-2 font-mono text-sm"
             />
             {errors.amount && (
@@ -187,7 +236,7 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
 
           <label className="flex flex-col gap-1 text-sm">
             <span className="flex items-center justify-between text-gray-700">
-              <span>Percent of available balance</span>
+              <span>{t('send.percentOfBalance')}</span>
               <span className="font-mono text-xs text-gray-500">{percent}%</span>
             </span>
             <input
@@ -197,18 +246,18 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
               step={1}
               value={percent}
               onChange={(e) => handleSliderChange(Number(e.target.value))}
-              aria-label="Percentage of balance to send"
+              aria-label={t('send.percentageLabel')}
               disabled={maxSendableWei <= 0n}
               className="w-full accent-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
             />
           </label>
 
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-gray-700">Gas limit</span>
+            <span className="text-gray-700">{t('send.gasLimit')}</span>
             <input
               {...register('gasLimit')}
               placeholder="21000"
-              aria-label="Gas limit"
+              aria-label={t('send.gasLimit')}
               className="rounded border border-gray-300 px-3 py-2 font-mono text-sm"
             />
             {errors.gasLimit && (
@@ -223,7 +272,7 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
             disabled={!isValid}
             className="btn mt-2 self-start disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Send
+            {t('common.send')}
           </button>
         </form>
       </div>
