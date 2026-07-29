@@ -1,17 +1,20 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DashboardLayout } from '@/components/layouts/DashboardLayout';
 import { TransactionHistorySection } from '@/components/TransactionHistorySection';
 import { TransactionSimulator } from '@/components/TransactionSimulator';
 import { CachedActivity } from '@/components/CachedActivity';
 import { SendModal } from '@/components/SendModal';
 import { PortfolioAssets } from '@/components/PortfolioAssets';
+import { VaultTable } from '@/components/vaults/VaultTable';
 import { PluginGrid } from '@/components/dashboard/PluginGrid';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const [sendOpen, setSendOpen] = useState(false);
 
   return (
@@ -21,12 +24,15 @@ export default function DashboardPage() {
           <h2 className="text-sm font-semibold text-gray-900">Staking</h2>
           <ErrorBoundary>
             <p className="mt-2 text-sm text-gray-600">No active stakes yet.</p>
+          <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.staking')}</h2>
+          <ErrorBoundary>
+            <p className="mt-2 text-sm text-gray-600">{t('dashboard.noStakes')}</p>
           </ErrorBoundary>
         </section>
 
         <section id="governance" className="card">
-          <h2 className="text-sm font-semibold text-gray-900">Governance</h2>
-          <p className="mt-2 text-sm text-gray-600">No open proposals.</p>
+          <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.governance')}</h2>
+          <p className="mt-2 text-sm text-gray-600">{t('dashboard.noProposals')}</p>
         </section>
 
         <section id="portfolio" className="card lg:col-span-2">
@@ -34,7 +40,7 @@ export default function DashboardPage() {
             <PortfolioAssets />
           </ErrorBoundary>
           <button type="button" className="btn mt-3" onClick={() => setSendOpen(true)}>
-            Send asset
+            {t('dashboard.sendAsset')}
           </button>
         </section>
 

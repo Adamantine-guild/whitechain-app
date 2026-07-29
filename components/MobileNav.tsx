@@ -3,20 +3,13 @@
 import { X } from "lucide-react";
 import BalanceDisplay from "./BalanceDisplay";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from 'react-i18next';
 
 const NAV_LINKS = [
-  {
-    label: "Home",
-    href: "/",
-  },
-  {
-    label: "Marketplace",
-    href: "/marketplace",
-  },
-  {
-    label: "About",
-    href: "/about",
-  },
+  { href: '/', key: 'nav.home' },
+  { href: '/marketplace', key: 'nav.marketplace' },
+  { href: '/about', key: 'nav.about' },
 ];
 
 export default function MobileNav({
@@ -36,6 +29,8 @@ export default function MobileNav({
   onConnectWallet: () => void;
   onClose: () => void;
 }) {
+  const { t } = useTranslation();
+
   return (
     <div
       id="mobile-navigation"
@@ -51,7 +46,7 @@ export default function MobileNav({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close navigation menu"
+                        aria-label={t('nav.closeMenu')}
             className="rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             <X size={24} aria-hidden="true" />
@@ -59,7 +54,7 @@ export default function MobileNav({
         </div>
 
         {/* Navigation Links */}
-        <nav aria-label="Mobile navigation">
+        <nav aria-label={t('nav.mobileNav')}>
           <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <li key={link.href}>
@@ -68,7 +63,7 @@ export default function MobileNav({
                   onClick={onClose}
                   className="block rounded-md px-3 py-3 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-100"
                 >
-                  {link.label}
+                  {t(link.key)}
                 </a>
               </li>
             ))}
@@ -77,8 +72,11 @@ export default function MobileNav({
 
         {/* Mobile Wallet Actions */}
         <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800">
-          <span className="text-sm text-gray-500 dark:text-gray-400">Theme</span>
-          <ThemeToggle />
+          <span className="text-sm text-gray-500 dark:text-gray-400">{t('common.theme')}</span>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
         <div className="mt-4 border-t border-gray-200 pt-4 dark:border-gray-800">
           {isConnected && address ? (
@@ -93,7 +91,7 @@ export default function MobileNav({
                 }}
                 className="btn-outline w-full"
               >
-                Disconnect {shortenAddress(address)}
+                {t('common.disconnect')} {shortenAddress(address)}
               </button>
             </div>
           ) : (
@@ -102,7 +100,7 @@ export default function MobileNav({
               onClick={onConnectWallet}
               className="btn w-full"
             >
-              Connect Wallet
+              {t('common.connectWallet')}
             </button>
           )}
         </div>

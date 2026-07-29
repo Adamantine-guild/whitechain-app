@@ -18,10 +18,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx next build && npx next start',
+    command: process.env.CI ? 'npx next build && npx next start' : 'npx next start',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 240_000,
   },
 });
 

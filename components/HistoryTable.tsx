@@ -3,6 +3,7 @@
 import React, { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getExplorerLink } from '@/lib/explorer';
+import { useTranslation } from 'react-i18next';
 
 export interface TransactionRow {
   hash: string;
@@ -12,6 +13,7 @@ export interface TransactionRow {
 }
 
 export function HistoryTable({ rows, chainId }: { rows: TransactionRow[]; chainId: number }) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const virtualizer = useVirtualizer({
@@ -26,9 +28,9 @@ export function HistoryTable({ rows, chainId }: { rows: TransactionRow[]; chainI
   return (
     <div ref={scrollRef} className="card h-[480px] overflow-y-auto p-0">
       <div className="grid grid-cols-[1fr_120px_140px] gap-2 border-b border-gray-200 px-4 py-2 text-xs font-semibold uppercase text-gray-500">
-        <span>Hash</span>
-        <span>Type</span>
-        <span className="text-right">Amount</span>
+        <span>{t('history.hash')}</span>
+        <span>{t('history.type')}</span>
+        <span className="text-right">{t('history.amount')}</span>
       </div>
       <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
         {items.map((virtualRow) => {
