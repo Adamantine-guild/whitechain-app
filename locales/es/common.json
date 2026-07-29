@@ -68,7 +68,15 @@
     "cachedActivity": "Actividad en caché",
     "fromCache": "Servido desde caché IndexedDB (instantáneo / sin conexión).",
     "backfilled": "Rellenado desde RPC.",
-    "lastSync": "Última sincronización"
+    "lastSync": "Última sincronización",
+    "empty": {
+      "headline": "Sin actividad aún",
+      "description": "Tu historial de transacciones aparecerá aquí una vez que comiences a usar el protocolo. Intercambia tokens, haz staking en vaults o explora la dApp para comenzar.",
+      "exploreVaults": "Explorar Vaults",
+      "swapTokens": "Intercambiar Tokens",
+      "connectHeadline": "Conecta tu Billetera",
+      "connectDescription": "Conecta tu billetera para ver tu historial de transacciones y actividad."
+    }
   },
   "history": {
     "hash": "Hash",

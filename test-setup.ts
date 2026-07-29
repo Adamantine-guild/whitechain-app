@@ -1,5 +1,6 @@
 // Initialize i18next for the test environment so components that use
 // useTranslation() don't fail with "NO_I18NEXT_INSTANCE".
+import '@testing-library/jest-dom/vitest';
 import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 

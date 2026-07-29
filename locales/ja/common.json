@@ -66,9 +66,17 @@
   },
   "activity": {
     "cachedActivity": "キャッシュされたアクティビティ",
-    "fromCache": "IndexedDB キャッシュから提供（即座 / オフライン）。",
-    "backfilled": "RPC からバックフィルされました。",
-    "lastSync": "最終同期"
+    "fromCache": "IndexedDBキャッシュから提供（即時 / オフライン）。",
+    "backfilled": "RPCからバックフィルされました。",
+    "lastSync": "最終同期",
+    "empty": {
+      "headline": "まだアクティビティがありません",
+      "description": "プロトコルの使用を開始すると、トランザクション履歴がここに表示されます。トークンをスワップしたり、Vaultにステークしたり、dAppを探索して始めましょう。",
+      "exploreVaults": "Vaultを探索",
+      "swapTokens": "トークンをスワップ",
+      "connectHeadline": "ウォレットを接続",
+      "connectDescription": "ウォレットを接続してトランザクション履歴とアクティビティを表示します。"
+    }
   },
   "history": {
     "hash": "ハッシュ",

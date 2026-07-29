@@ -5,6 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useChainId } from 'wagmi';
 import { useTranslation } from 'react-i18next';
 import { HistoryTable, type TransactionRow } from './HistoryTable';
+import { EmptyState } from './EmptyState';
 
 const TYPES = ['Send', 'Receive', 'Swap', 'Stake', 'Unstake'];
 
@@ -30,13 +31,26 @@ function parsePage(raw: string | null): number {
   return Number.isFinite(n) && n >= 1 ? n : 1;
 }
 
-export function TransactionHistorySection() {
+export function TransactionHistorySection({
+  rows: externalRows,
+}: {
+  /** Optional external rows. Falls back to mock data when omitted. */
+  rows?: TransactionRow[];
+}) {
   const { t } = useTranslation();
-  const allRows = useMemo(() => buildMockRows(50_000), []);
+  const allRows = useMemo(() => externalRows ?? buildMockRows(50_000), [externalRows]);
   const chainId = useChainId();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  if (allRows.length === 0) {
+    return (
+      <section id="history" className="card lg:col-span-2" data-testid="history-empty">
+        <EmptyState />
+      </section>
+    );
+  }
 
   const totalPages = Math.max(1, Math.ceil(allRows.length / PAGE_SIZE));
   const page = Math.min(parsePage(searchParams.get('page')), totalPages);
