@@ -5,6 +5,54 @@ const nextConfig = {
       bodySizeLimit: '1mb'
     }
   },
+  images: {
+    // Next's optimizer negotiates WebP with supported browsers.
+    formats: ['image/webp'],
+    remotePatterns: [
+      // Common token metadata/CDN hosts.
+      {
+        protocol: 'https',
+        hostname: 'assets.coingecko.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'coin-images.coingecko.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.coingecko.com',
+        pathname: '/**'
+      },
+      // Common ENS avatar and third-party plugin icon hosts.
+      {
+        protocol: 'https',
+        hostname: 'metadata.ens.domains',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'euc.li',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.jsdelivr.net',
+        pathname: '/**'
+      }
+    ]
+  },
   webpack: (config) => {
     // @coinbase/cdp-sdk (pulled in transitively by the Coinbase Wallet connector)
     // references optional x402 payment packages we don't install or use.

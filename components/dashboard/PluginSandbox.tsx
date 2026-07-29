@@ -42,6 +42,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import type { PluginRegistryEntry } from '@/lib/types/plugin';
 import { pluginManager } from '@/lib/core/PluginManager';
+import { t } from '@/lib/i18n/helpers';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -188,9 +189,9 @@ export function PluginSandbox({ entry, className }: PluginSandboxProps) {
         role="alert"
         className={`rounded-md border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300 ${className ?? ''}`}
       >
-        <span className="font-semibold">Plugin error</span>
+        <span className="font-semibold">{t('sandbox.pluginError', 'Plugin error')}</span>
         {' — '}
-        {entry.errorMessage ?? mountError ?? 'An unknown error occurred.'}
+        {entry.errorMessage ?? mountError ?? t('sandbox.unknownError', 'An unknown error occurred.')}
       </div>
     );
   }
@@ -222,7 +223,7 @@ export function PluginSandbox({ entry, className }: PluginSandboxProps) {
       {/* Loading overlay while mounting */}
       {(entry.status === 'mounting' || entry.status === 'registered') && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/70 dark:bg-gray-900/70">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Loading plugin…</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{t('sandbox.loadingPlugin', 'Loading plugin…')}</span>
         </div>
       )}
     </div>
