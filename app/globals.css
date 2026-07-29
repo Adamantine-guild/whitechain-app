@@ -21,3 +21,50 @@ html, body, :root {
 .btn-outline {
   @apply inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800;
 }
+
+/* ─── RTL (Right-to-Left) support ────────────────────────────────────── */
+
+/*
+ * When the I18nProvider sets `dir="rtl"` on <html> (e.g. for Arabic),
+ * these rules ensure the layout mirrors correctly.
+ */
+
+[dir='rtl'] {
+  text-align: right;
+}
+
+[dir='rtl'] .container {
+  direction: rtl;
+}
+
+/*
+ * Flip flex-row ordering for RTL so navbar items render in the expected
+ * mirrored order.  Tailwind's logical utilities (e.g. `ms-`, `me-`,
+ * `ps-`, `pe-`, `start-`, `end-`) are already direction-aware, so we
+ * only need to handle the overall row direction here.
+ */
+[dir='rtl'] .flex-row,
+[dir='rtl'] .md\:flex {
+  flex-direction: row-reverse;
+}
+
+/* Dropdown menus should open from the opposite side in RTL. */
+[dir='rtl'] .origin-top-right {
+  transform-origin: top left;
+}
+
+/* Subtle micro-animation for dropdown menus (shared LTR + RTL). */
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fade-slide-in 150ms ease-out;
+}
