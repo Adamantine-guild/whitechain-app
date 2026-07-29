@@ -8,6 +8,8 @@ import { useAccount, useBalance, useGasPrice, useChainId, useConfig } from 'wagm
 import { buildSendSchema, type SendFormValues } from '@/lib/validation/sendSchema';
 import { notifyTxPending, notifyTxSuccess, notifyTxError } from '@/components/TxToasts';
 import { useModalA11y } from '@/lib/hooks/useModalA11y';
+import { useTransactionReceiptWatcher } from '@/lib/hooks/useTransactionReceiptWatcher';
+import type { Hash } from 'viem';
 
 /** Safety multiplier applied to the estimated gas cost reserved by "Max" (#19). */
 const GAS_BUFFER_MULTIPLIER = 2n;
@@ -33,6 +35,18 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
   const { data: gasPrice } = useGasPrice({ query: { refetchInterval: 15_000 } });
   const chainId = useChainId();
   const wagmiConfigChain = useConfig().chains.find((c) => c.id === chainId);
+
+  // Track the last submitted transaction for optimistic UI updates.
+  // Reset when the modal closes.
+  const [lastTxHash, setLastTxHash] = useState<Hash | undefined>(undefined);
+  const [lastTxAmount, setLastTxAmount] = useState<bigint | undefined>(undefined);
+
+  // Watch for the transaction receipt and update the optimistic store.
+  useTransactionReceiptWatcher(
+    address as `0x${string}` | undefined,
+    lastTxHash,
+    lastTxAmount
+  );
 
   const balanceWei = balance ? BigInt(balance.value.toString()) : 0n;
   const schema = React.useMemo(() => buildSendSchema(balanceWei), [balanceWei]);
@@ -101,6 +115,8 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
     if (!isOpen) {
       reset();
       setPercent(0);
+      setLastTxHash(undefined);
+      setLastTxAmount(undefined);
     }
   }, [isOpen, reset]);
 
@@ -133,6 +149,9 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
 
       if (txHash && txHash !== '0x0') {
         notifyTxSuccess(txHash as `0x${string}`, wagmiConfigChain);
+        // Record the optimistic deduction so the UI updates immediately.
+        setLastTxHash(txHash as Hash);
+        setLastTxAmount(BigInt(values.amount));
       } else {
         // Some wallets resolve without a hash (e.g. hardware approvals); still
         // surface a neutral success so the user isn't left without feedback.

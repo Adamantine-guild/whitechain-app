@@ -27,6 +27,9 @@ vi.mock('wagmi', () => ({
   useGasPrice: () => ({ data: undefined }),
   useChainId: () => 1,
   useConfig: () => ({ chains: [{ id: 1 }] }),
+  usePublicClient: () => ({
+    getTransactionReceipt: async () => undefined,
+  }),
 }));
 
 describe('SendModal', () => {
