@@ -1,6 +1,8 @@
 import { useAccount, useBalance } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 
 const BalanceDisplay = () => {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data, isLoading } = useBalance({
     address,
@@ -10,7 +12,7 @@ const BalanceDisplay = () => {
   // No manual per-block refetch here: useBlockchainDataSync (mounted in
   // Providers) invalidates this query only when a transfer touches `address`.
   if (isLoading) {
-    return <span className="h-4 w-16 animate-pulse rounded bg-gray-200" aria-label="Loading balance" />;
+    return <span className="h-4 w-16 animate-pulse rounded bg-gray-200" aria-label={t('balance.loading')} />;
   }
 
   if (!data) return null;

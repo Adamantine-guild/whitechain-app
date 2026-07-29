@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Menu, X } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 import { WalletModal } from './WalletModal';
 import MobileNav from './MobileNav';
 import BalanceDisplay from './BalanceDisplay';
@@ -14,12 +15,14 @@ import { ThemeToggle } from './ThemeToggle';
 import { ProfileDropdown } from './ProfileDropdown';
 import { SlippageSettings } from './SlippageSettings';
 import { Avatar } from './Avatar';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function Navbar() {
+  const { t } = useTranslation();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,6 +48,7 @@ export function Navbar() {
         {/* Desktop Wallet Actions */}
         <div className="hidden md:flex items-center gap-3">
           <SlippageSettings />
+          <LanguageSwitcher />
           <ThemeToggle />
           {isConnected && address ? (
             <>
@@ -60,14 +64,13 @@ export function Navbar() {
               </button>
               <ProfileDropdown />
             </>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="btn"
-            >
-              Connect Wallet
-            </button>
+          ) : (              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="btn"
+              >
+                {t('common.connectWallet')}
+              </button>
           )}
         </div>
 
@@ -76,7 +79,7 @@ export function Navbar() {
           type="button"
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
           aria-label={
-            isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"
+            isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')
           }
           aria-expanded={isMobileMenuOpen}
           aria-controls="mobile-navigation"

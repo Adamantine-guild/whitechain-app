@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAccount, useBalance } from 'wagmi';
 import { AssetTable, type AssetRow } from './AssetTable';
+import { useTranslation } from 'react-i18next';
 
 /**
  * PortfolioAssets — client component that loads the native balance and renders
@@ -10,6 +11,7 @@ import { AssetTable, type AssetRow } from './AssetTable';
  * skeleton rows (issue #10), so the layout reserves space and never jumps.
  */
 export function PortfolioAssets() {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { data, isLoading } = useBalance({
     address,
@@ -22,7 +24,7 @@ export function PortfolioAssets() {
 
   return (
     <div className="card">
-      <h2 className="text-sm font-semibold text-gray-900">Assets</h2>
+      <h2 className="text-sm font-semibold text-gray-900">{t('assets.title')}</h2>
       <AssetTable isLoading={isLoading && !!address} rows={rows} />
     </div>
   );
