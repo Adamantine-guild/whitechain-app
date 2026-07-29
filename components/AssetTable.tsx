@@ -7,6 +7,8 @@ export interface AssetRow {
   symbol: string;
   amount: string;
   valueUsd?: string;
+  /** When true, the balance is optimistically updated and pending confirmation. */
+  isPending?: boolean;
 }
 
 interface AssetTableProps {
@@ -47,7 +49,18 @@ export function AssetTable({ isLoading, rows, skeletonCount = 5 }: AssetTablePro
       {rows.map((row, i) => (
         <div key={`${row.symbol}-${i}`} className="flex items-center justify-between px-3 py-3">
           <span className="text-sm font-medium text-gray-900">{row.symbol}</span>
-          <span className="text-sm text-gray-700">{row.amount}</span>
+          <span className="flex items-center gap-2 text-sm text-gray-700">
+            {row.amount}
+            {row.isPending && (
+              <span
+                className="inline-flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-700"
+                title="Pending confirmation"
+              >
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
+                Pending
+              </span>
+            )}
+          </span>
           {row.valueUsd && <span className="text-sm text-gray-500">{row.valueUsd}</span>}
         </div>
       ))}
