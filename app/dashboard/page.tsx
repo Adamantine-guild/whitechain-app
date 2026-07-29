@@ -21,6 +21,9 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <section id="staking" className="card">
+          <h2 className="text-sm font-semibold text-gray-900">Staking</h2>
+          <ErrorBoundary>
+            <p className="mt-2 text-sm text-gray-600">No active stakes yet.</p>
           <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.staking')}</h2>
           <ErrorBoundary>
             <p className="mt-2 text-sm text-gray-600">{t('dashboard.noStakes')}</p>
