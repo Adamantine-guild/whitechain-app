@@ -14,6 +14,7 @@ import { useOptimisticBalance } from '@/lib/hooks/useOptimisticBalance';
  * post-transaction balance with a subtle "pending" badge.
  */
 export function PortfolioAssets() {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const {
     optimisticBalance,
@@ -40,7 +41,7 @@ export function PortfolioAssets() {
 
   return (
     <div className="card">
-      <h2 className="text-sm font-semibold text-gray-900">Assets</h2>
+      <h2 className="text-sm font-semibold text-gray-900">{t('assets.title')}</h2>
       <AssetTable isLoading={isLoading && !!address} rows={rows} />
       {hasPending && (
         <p className="mt-2 text-xs text-amber-700">

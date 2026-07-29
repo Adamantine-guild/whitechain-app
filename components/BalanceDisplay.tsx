@@ -4,6 +4,7 @@ import { useAccount } from 'wagmi';
 import { useOptimisticBalance } from '@/lib/hooks/useOptimisticBalance';
 
 const BalanceDisplay = () => {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const {
     optimisticBalance,
@@ -19,7 +20,7 @@ const BalanceDisplay = () => {
   // No manual per-block refetch here: useBlockchainDataSync (mounted in
   // Providers) invalidates this query only when a transfer touches `address`.
   if (isLoading) {
-    return <span className="h-4 w-16 animate-pulse rounded bg-gray-200" aria-label="Loading balance" />;
+    return <span className="h-4 w-16 animate-pulse rounded bg-gray-200" aria-label={t('balance.loading')} />;
   }
 
   if (!optimisticBalance || !realBalance) return null;

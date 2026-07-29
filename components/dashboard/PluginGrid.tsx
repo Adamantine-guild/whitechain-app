@@ -17,6 +17,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { PluginSandbox } from '@/components/dashboard/PluginSandbox';
 import { pluginRegistry } from '@/lib/store/pluginRegistry';
 import type { PluginRegistryEntry } from '@/lib/types/plugin';
+import { useTranslation } from 'react-i18next';
 
 // ---------------------------------------------------------------------------
 // Component
@@ -29,6 +30,7 @@ import type { PluginRegistryEntry } from '@/lib/types/plugin';
  * doesn't affect the existing dashboard layout.
  */
 export function PluginGrid() {
+  const { t } = useTranslation();
   const [entries, setEntries] = useState<PluginRegistryEntry[]>(() =>
     pluginRegistry.getAll()
   );
@@ -48,16 +50,16 @@ export function PluginGrid() {
   return (
     <section
       id="plugins"
-      aria-label="Community plugins"
+      aria-label={t('plugins.communityPlugins')}
       className="card lg:col-span-2"
     >
       {/* Section header */}
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-          Community Plugins
+          {t('plugins.communityPlugins')}
         </h2>
         <span className="text-xs text-gray-500 dark:text-gray-400">
-          {entries.length} {entries.length === 1 ? 'plugin' : 'plugins'} loaded
+          {t('plugins.pluginLoaded', { count: entries.length })}
         </span>
       </div>
 
@@ -80,6 +82,7 @@ interface PluginCardProps {
 }
 
 function PluginCard({ entry }: PluginCardProps) {
+  const { t } = useTranslation();
   const { manifest } = entry.plugin;
 
   return (
@@ -120,7 +123,7 @@ function PluginCard({ entry }: PluginCardProps) {
             role="alert"
             className="m-2 rounded border border-red-200 bg-red-50 p-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300"
           >
-            This plugin encountered a critical error and has been suspended.
+            {t('pluginCard.suspended')}
           </div>
         }
       >
@@ -134,7 +137,7 @@ function PluginCard({ entry }: PluginCardProps) {
       {manifest.permissions.length > 0 && (
         <div className="border-t border-gray-100 px-3 py-1.5 dark:border-gray-800">
           <p className="text-[10px] text-gray-400 dark:text-gray-500">
-            <span className="font-medium">Permissions: </span>
+            <span className="font-medium">{t('plugins.permissions')}: </span>
             {manifest.permissions.join(', ')}
           </p>
         </div>
