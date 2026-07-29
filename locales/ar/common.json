@@ -1,0 +1,180 @@
+{
+  "common": {
+    "connectWallet": "ربط المحفظة",
+    "disconnect": "قطع الاتصال",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "send": "إرسال",
+    "max": "الحد الأقصى",
+    "loading": "جارٍ التحميل…",
+    "theme": "المظهر",
+    "save": "حفظ",
+    "confirm": "تأكيد",
+    "stake": "إيداع",
+    "unstake": "سحب",
+    "speedUp": "تسريع"
+  },
+  "home": {
+    "welcome": "مرحبًا بك في WhiteChain",
+    "connectPrompt": "قم بربط محفظتك من شريط التنقل للبدء."
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "marketplace": "السوق",
+    "about": "حول",
+    "openMenu": "فتح قائمة التنقل",
+    "closeMenu": "إغلاق قائمة التنقل",
+    "mobileNav": "التنقل على الهاتف"
+  },
+  "dashboard": {
+    "overview": "نظرة عامة",
+    "staking": "الإيداع",
+    "governance": "الحوكمة",
+    "portfolio": "المحفظة الاستثمارية",
+    "plugins": "الإضافات",
+    "showMenu": "إظهار القائمة",
+    "hideMenu": "إخفاء القائمة",
+    "noStakes": "لا توجد إيداعات نشطة حتى الآن.",
+    "noProposals": "لا توجد مقترحات مفتوحة.",
+    "sendAsset": "إرسال أصل"
+  },
+  "wallet": {
+    "connectWallet": "ربط محفظة",
+    "connectionRejected": "تم رفض طلب الاتصال.",
+    "ledgerUnplugged": "تم فصل جهاز Ledger. أعد توصيله عبر USB وحاول مرة أخرى.",
+    "ledgerOpenApp": "يرجى فتح تطبيق Ethereum على جهاز Ledger، ثم حاول مرة أخرى.",
+    "webUsbUnavailable": "WebUSB غير متاح هنا. استخدم متصفحًا قائمًا على Chromium عبر HTTPS أو localhost."
+  },
+  "send": {
+    "sendAsset": "إرسال أصل",
+    "balance": "الرصيد",
+    "recipientAddress": "عنوان المستلم",
+    "amountWei": "المبلغ (wei)",
+    "percentOfBalance": "نسبة الرصيد المتاح",
+    "gasLimit": "حد الغاز",
+    "percentageLabel": "نسبة الرصيد المراد إرسالها",
+    "noWallet": "لم يتم اكتشاف محفظة. قم بربط محفظة للإرسال.",
+    "txRejected": "تم رفض المعاملة أو فشلت."
+  },
+  "copyAddress": {
+    "copyToClipboard": "نسخ العنوان إلى الحافظة",
+    "copied": "تم النسخ!",
+    "copyBlocked": "تم حظر النسخ"
+  },
+  "balance": {
+    "loading": "جارٍ تحميل الرصيد"
+  },
+  "activity": {
+    "cachedActivity": "النشاط المخزن مؤقتًا",
+    "fromCache": "يتم التقديم من ذاكرة التخزين المؤقت IndexedDB (فوري / بدون اتصال).",
+    "backfilled": "تم الاسترجاع من RPC.",
+    "lastSync": "آخر مزامنة"
+  },
+  "history": {
+    "hash": "الهاش",
+    "type": "النوع",
+    "amount": "المبلغ",
+    "title": "سجل المعاملات",
+    "transactionsSummary": "معاملات (بيانات تجريبية) — صفحة {{page}} من {{totalPages}}",
+    "prev": "السابق",
+    "next": "التالي",
+    "page": "صفحة {{page}} / {{totalPages}}"
+  },
+  "assets": {
+    "title": "الأصول"
+  },
+  "mempool": {
+    "pendingTransactions": "المعاملات المعلقة",
+    "liveTracking": "تتبع مباشر لمجمع الذاكرة",
+    "connected": "متصل",
+    "notConnected": "غير متصل",
+    "noPending": "لا توجد معاملات معلقة.",
+    "stuck": "عالقة",
+    "stuckWarning": "معاملة(ات) تبدو عالقة. استخدم تسريع أو إلغاء أعلاه.",
+    "speedUp": "تسريع",
+    "cancel": "إلغاء",
+    "noWallet": "لم يتم العثور على محفظة. يرجى ربط محفظة."
+  },
+  "txToasts": {
+    "pending": "المعاملة قيد المعالجة…",
+    "confirmWallet": "قم بتأكيد المعاملة في محفظتك.",
+    "sent": "تم إرسال المعاملة",
+    "broadcast": "تم بث معاملتك إلى الشبكة.",
+    "submitted": "تم إرسال معاملتك.",
+    "viewExplorer": "عرض في المستكشف",
+    "failed": "فشلت المعاملة",
+    "rejected": "تم رفض المعاملة أو فشلت."
+  },
+  "slippage": {
+    "tolerance": "تحمل الانزلاق: {{value}}%. انقر للتعديل.",
+    "title": "تحمل الانزلاق",
+    "description": "سيتم إلغاء معاملتك إذا تحرك السعر أكثر من هذا.",
+    "quickSelect": "اختيار سريع",
+    "custom": "مخصص",
+    "setTo": "تعيين الانزلاق إلى {{value}}%",
+    "highWarning": "تحذير انزلاق عالٍ",
+    "highWarningDesc": "تعيين الانزلاق فوق {{threshold}}% يعرّضك لخطر كبير من هجمات الساندويتش. ضع في اعتبارك قيمة أقل.",
+    "currentTolerance": "التحمل الحالي"
+  },
+  "vaults": {
+    "balanceCenter": "مركز رصيد الخزائن",
+    "walletNotConnected": "المحفظة غير متصلة (الوضع التجريبي)",
+    "availableBalance": "الرصيد الأصلي المتاح",
+    "vault": "الخزينة",
+    "apy": "العائد السنوي",
+    "tvl": "إجمالي القيمة المقفلة",
+    "yourStake": "إيداعك",
+    "actions": "الإجراءات",
+    "asset": "الأصل",
+    "enterAmount": "أدخل المبلغ لـ",
+    "useMax": "استخدام الحد الأقصى",
+    "confirmStake": "تأكيد الإيداع",
+    "confirmUnstake": "تأكيد السحب",
+    "cancel": "إلغاء",
+    "txSucceeded": "نجحت المعاملة وتم تحديث لوحة المعلومات!",
+    "invalidAmount": "يرجى إدخال مبلغ إيجابي صالح.",
+    "insufficientBalance": "رصيد غير كافٍ. الحد الأقصى المتاح: {{max}}.",
+    "txFailed": "فشلت المعاملة. يرجى المحاولة مرة أخرى."
+  },
+  "vaultCard": {
+    "stake": "إيداع",
+    "unstake": "سحب",
+    "stakeDetails": "تفاصيل إيداع {{name}}",
+    "assetLabel": "الأصل",
+    "tvl": "إجمالي القيمة المقفلة",
+    "yourStake": "إيداعك",
+    "amountLabel": "مبلغ {{action}}",
+    "useMax": "استخدام الحد الأقصى",
+    "processing": "جارٍ المعالجة…",
+    "confirmStake": "تأكيد الإيداع",
+    "confirmUnstake": "تأكيد السحب",
+    "cancel": "إلغاء",
+    "txSucceeded": "نجحت المعاملة!",
+    "invalidAmount": "يرجى إدخال مبلغ إيجابي صالح.",
+    "insufficientBalance": "رصيد غير كافٍ. الحد الأقصى المتاح: {{max}}.",
+    "txFailed": "فشلت المعاملة. يرجى المحاولة مرة أخرى."
+  },
+  "plugins": {
+    "communityPlugins": "إضافات المجتمع",
+    "pluginLoaded_one": "تم تحميل {{count}} إضافة",
+    "pluginLoaded_other": "تم تحميل {{count}} إضافات",
+    "permissions": "الأذونات",
+    "pluginError": "واجهت هذه الإضافة خطأ حرجًا وتم تعليقها."
+  },
+  "sandbox": {
+    "pluginError": "خطأ في الإضافة",
+    "loadingPlugin": "جارٍ تحميل الإضافة…",
+    "unknownError": "حدث خطأ غير معروف."
+  },
+  "pluginCard": {
+    "suspended": "واجهت هذه الإضافة خطأ حرجًا وتم تعليقها."
+  },
+  "language": {
+    "selector": "اختر اللغة",
+    "en": "English",
+    "es": "Español",
+    "zh": "中文",
+    "ja": "日本語",
+    "ar": "العربية"
+  }
+}

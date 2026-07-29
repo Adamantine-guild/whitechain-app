@@ -2,6 +2,7 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation, I18nextProvider } from 'react-i18next';
+import { isRtlLocale } from '@/lib/i18n';
 
 // Ensures the client-side i18next singleton is initialized before children
 // attempt to call useTranslation().
@@ -9,8 +10,9 @@ import { useTranslation, I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n/client';
 
 /**
- * HtmlLangSync — syncs the <html lang> attribute with the currently selected
- * language so screen readers and search engines always see the correct value.
+ * HtmlLangSync — syncs the <html lang> and <html dir> attributes with the
+ * currently selected language so screen readers, search engines, and CSS
+ * directional styles always see the correct values.
  */
 function HtmlLangSync() {
   const { i18n } = useTranslation();
@@ -18,6 +20,7 @@ function HtmlLangSync() {
   useEffect(() => {
     const lang = i18n.language?.split('-')[0] ?? 'en';
     document.documentElement.lang = lang;
+    document.documentElement.dir = isRtlLocale(lang) ? 'rtl' : 'ltr';
   }, [i18n.language]);
 
   return null;

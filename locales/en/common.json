@@ -172,6 +172,9 @@
   "language": {
     "selector": "Select language",
     "en": "English",
-    "es": "Español"
+    "es": "Español",
+    "zh": "中文",
+    "ja": "日本語",
+    "ar": "العربية"
   }
 }

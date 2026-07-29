@@ -13,3 +13,11 @@ import i18next from 'i18next';
 export function t(key: string, fallback: string): string {
   return (i18next.isInitialized ? i18next.t(key) : null) ?? fallback;
 }
+
+/**
+ * Returns the current language code (e.g. 'en', 'ar').
+ * Useful outside of React components.
+ */
+export function getCurrentLocale(): string {
+  return i18next.isInitialized ? (i18next.language?.split('-')[0] ?? 'en') : 'en';
+}
