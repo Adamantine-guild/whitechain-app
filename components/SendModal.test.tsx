@@ -12,7 +12,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import React from 'react';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, cleanup } from '@/test-utils';
 import { SendModal } from './SendModal';
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111' as `0x${string}`;
@@ -50,7 +50,7 @@ describe('SendModal', () => {
   it('shows an inline error for a malformed address', async () => {
     render(<SendModal isOpen onClose={() => {}} />);
     fireEvent.change(screen.getByLabelText('Recipient address'), { target: { value: 'bad' } });
-    fireEvent.change(screen.getByLabelText('Amount in wei'), { target: { value: '10' } });
+    fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '10' } });
     fireEvent.change(screen.getByLabelText('Gas limit'), { target: { value: '21000' } });
     await waitFor(() => {
       expect(screen.getByText(/valid 0x address/i)).toBeTruthy();
@@ -62,7 +62,7 @@ describe('SendModal', () => {
     fireEvent.change(screen.getByLabelText('Recipient address'), {
       target: { value: '0x' + 'a'.repeat(40) }
     });
-    fireEvent.change(screen.getByLabelText('Amount in wei'), { target: { value: '1001' } });
+    fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '1001' } });
     fireEvent.change(screen.getByLabelText('Gas limit'), { target: { value: '21000' } });
     await waitFor(() => {
       expect(screen.getByText(/exceeds your balance/i)).toBeTruthy();
@@ -74,7 +74,7 @@ describe('SendModal', () => {
     fireEvent.change(screen.getByLabelText('Recipient address'), {
       target: { value: '0x' + 'a'.repeat(40) }
     });
-    fireEvent.change(screen.getByLabelText('Amount in wei'), { target: { value: '10' } });
+    fireEvent.change(screen.getByPlaceholderText('0'), { target: { value: '10' } });
     fireEvent.change(screen.getByLabelText('Gas limit'), { target: { value: '21000' } });
     await waitFor(() => {
       expect((screen.getByText('Send') as HTMLButtonElement).disabled).toBe(false);
@@ -86,7 +86,7 @@ describe('SendModal', () => {
     render(<SendModal isOpen onClose={() => {}} />);
     fireEvent.click(screen.getByText('Max'));
     await waitFor(() => {
-      expect((screen.getByLabelText('Amount in wei') as HTMLInputElement).value).toBe('1000');
+      expect((screen.getByPlaceholderText('0') as HTMLInputElement).value).toBe('1000');
     });
   });
 
@@ -96,7 +96,7 @@ describe('SendModal', () => {
       target: { value: '50' }
     });
     await waitFor(() => {
-      expect((screen.getByLabelText('Amount in wei') as HTMLInputElement).value).toBe('500');
+      expect((screen.getByPlaceholderText('0') as HTMLInputElement).value).toBe('500');
     });
   });
 

@@ -2,16 +2,18 @@
 
 import { useState, type ReactNode } from 'react';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 const NAV_ITEMS = [
-  { label: 'Overview', href: '#overview' },
-  { label: 'Staking', href: '#staking' },
-  { label: 'Governance', href: '#governance' },
-  { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Plugins', href: '#plugins' }
+  { href: '#overview', key: 'dashboard.overview' as const },
+  { href: '#staking', key: 'dashboard.staking' as const },
+  { href: '#governance', key: 'dashboard.governance' as const },
+  { href: '#portfolio', key: 'dashboard.portfolio' as const },
+  { href: '#plugins', key: 'dashboard.plugins' as const }
 ];
 
 export function DashboardLayout({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
@@ -23,7 +25,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
         aria-expanded={isSidebarOpen}
         aria-controls="dashboard-sidebar"
       >
-        {isSidebarOpen ? 'Hide menu' : 'Show menu'}
+        {isSidebarOpen ? t('dashboard.hideMenu') : t('dashboard.showMenu')}
       </button>
 
       <nav
@@ -37,7 +39,7 @@ export function DashboardLayout({ children }: { children: ReactNode }) {
                 href={item.href}
                 className="block whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
               >
-                {item.label}
+                {t(item.key)}
               </a>
             </li>
           ))}
