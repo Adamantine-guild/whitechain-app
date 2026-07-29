@@ -90,7 +90,7 @@
     "notConnected": "未连接",
     "noPending": "没有待处理的交易。",
     "stuck": "卡住",
-    "stuckWarning": "笔交易似乎已卡住。请使用上方的"加速"或"取消"。",
+    "stuckWarning": "笔交易似乎已卡住。请使用上方的「加速」或「取消」。",
     "speedUp": "加速",
     "cancel": "取消",
     "noWallet": "未找到注入的钱包。请连接钱包。"
