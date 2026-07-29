@@ -68,7 +68,15 @@
     "cachedActivity": "Cached activity",
     "fromCache": "Served from IndexedDB cache (instant / offline).",
     "backfilled": "Backfilled from RPC.",
-    "lastSync": "Last sync"
+    "lastSync": "Last sync",
+    "empty": {
+      "headline": "No Activity Yet",
+      "description": "Your transaction history will appear here once you start using the protocol. Swap tokens, stake in vaults, or explore the dApp to get started.",
+      "exploreVaults": "Explore Vaults",
+      "swapTokens": "Swap Tokens",
+      "connectHeadline": "Connect Your Wallet",
+      "connectDescription": "Connect your wallet to view your transaction history and activity."
+    }
   },
   "history": {
     "hash": "Hash",

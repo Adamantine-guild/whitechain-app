@@ -65,10 +65,18 @@
     "loading": "正在加载余额"
   },
   "activity": {
-    "cachedActivity": "缓存活动",
-    "fromCache": "从 IndexedDB 缓存提供（即时 / 离线）。",
-    "backfilled": "从 RPC 回填。",
-    "lastSync": "上次同步"
+    "cachedActivity": "缓存的活动",
+    "fromCache": "从IndexedDB缓存提供（即时/离线）。",
+    "backfilled": "从RPC回填。",
+    "lastSync": "最后同步",
+    "empty": {
+      "headline": "尚无活动",
+      "description": "一旦您开始使用协议，您的交易历史将出现在此处。交换代币、在Vault中质押或探索dApp以开始使用。",
+      "exploreVaults": "探索Vault",
+      "swapTokens": "交换代币",
+      "connectHeadline": "连接您的钱包",
+      "connectDescription": "连接您的钱包以查看交易历史和活动。"
+    }
   },
   "history": {
     "hash": "哈希",
