@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useConnect } from 'wagmi';
-import { CoinbaseIcon, GenericWalletIcon, MetaMaskIcon, WalletConnectIcon } from './icons';
+import { CoinbaseIcon, GenericWalletIcon, LedgerIcon, MetaMaskIcon, WalletConnectIcon } from './icons';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -14,7 +15,8 @@ const CONNECTOR_ICONS: Record<string, (props: { className?: string }) => JSX.Ele
   metaMaskSDK: MetaMaskIcon,
   coinbaseWallet: CoinbaseIcon,
   walletConnect: WalletConnectIcon,
-  injected: GenericWalletIcon
+  injected: GenericWalletIcon,
+  ledgerWebUsb: LedgerIcon
 };
 
 function iconFor(connectorId: string) {
@@ -30,17 +32,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
     }
   });
   const dialogRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose();
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  useModalA11y(isOpen, onClose, dialogRef);
 
   useEffect(() => {
     if (isOpen) reset();
@@ -69,6 +61,7 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
         aria-modal="true"
         aria-labelledby="wallet-modal-title"
         className="w-full max-w-sm rounded-lg bg-white p-6 shadow-xl"
+        tabIndex={-1}
       >
         <div className="flex items-center justify-between">
           <h2 id="wallet-modal-title" className="text-base font-semibold text-gray-900">
@@ -115,7 +108,15 @@ export function WalletModal({ isOpen, onClose }: WalletModalProps) {
 
         {error && (
           <p role="alert" className="mt-3 text-sm text-red-600">
-            {error.message.includes('User rejected') ? 'Connection request was rejected.' : error.message}
+            {error.message.includes('User rejected')
+              ? 'Connection request was rejected.'
+              : error.message.includes('unplugged') || error.message.includes('disconnected')
+                ? 'Your Ledger was unplugged. Reconnect it over USB and try again.'
+                : error.message.includes('open the Ethereum app')
+                  ? 'Please open the Ethereum app on your Ledger, then try again.'
+                  : error.message.includes('WebUSB')
+                    ? 'WebUSB is not available here. Use a Chromium-based browser over HTTPS or localhost.'
+                    : error.message}
           </p>
         )}
       </div>

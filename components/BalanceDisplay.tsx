@@ -15,6 +15,8 @@ const BalanceDisplay = () => {
     }
   });
 
+  // No manual per-block refetch here: useBlockchainDataSync (mounted in
+  // Providers) invalidates this query only when a transfer touches `address`.
   if (isLoading) {
     return <span className="h-4 w-16 animate-pulse rounded bg-gray-200" aria-label="Loading balance" />;
   }
