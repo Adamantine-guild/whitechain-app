@@ -11,6 +11,8 @@ import { PortfolioAssets } from '@/components/PortfolioAssets';
 import { VaultTable } from '@/components/vaults/VaultTable';
 import { PluginGrid } from '@/components/dashboard/PluginGrid';
 
+import { SwapCard } from '@/components/swap/SwapCard';
+
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 export default function DashboardPage() {
@@ -20,6 +22,12 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section id="swap" className="lg:col-span-2">
+          <ErrorBoundary>
+            <SwapCard />
+          </ErrorBoundary>
+        </section>
+
         <section id="staking" className="card">
           <h2 className="text-sm font-semibold text-gray-900">Staking</h2>
           <ErrorBoundary>
