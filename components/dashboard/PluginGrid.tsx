@@ -14,6 +14,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ImageWithFallback } from '@/components/ImageWithFallback';
 import { PluginSandbox } from '@/components/dashboard/PluginSandbox';
 import { pluginRegistry } from '@/lib/store/pluginRegistry';
 import type { PluginRegistryEntry } from '@/lib/types/plugin';
@@ -84,20 +85,28 @@ interface PluginCardProps {
 function PluginCard({ entry }: PluginCardProps) {
   const { t } = useTranslation();
   const { manifest } = entry.plugin;
+  const iconFallback = (
+    <span
+      aria-hidden="true"
+      className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-sm bg-gray-100 text-[10px] font-semibold text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+    >
+      {manifest.name.trim().charAt(0).toUpperCase() || '?'}
+    </span>
+  );
 
   return (
     <div className="flex flex-col overflow-hidden rounded-md border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-900">
       {/* Card header */}
       <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2 dark:border-gray-800">
         {manifest.iconUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <ImageWithFallback
             src={manifest.iconUrl}
             alt=""
             role="presentation"
             width={20}
             height={20}
             className="h-5 w-5 rounded-sm object-contain"
+            fallback={iconFallback}
           />
         )}
         <div className="min-w-0 flex-1">
