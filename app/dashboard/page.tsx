@@ -15,6 +15,7 @@ import { SwapCard } from '@/components/swap/SwapCard';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ProtocolStatsBar } from '@/components/dashboard/ProtocolStatsBar';
+import { RecentSwaps } from '@/components/dashboard/RecentSwaps';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -48,6 +49,12 @@ export default function DashboardPage() {
         <section id="governance" className="card">
           <h2 className="text-sm font-semibold text-gray-900">{t('dashboard.governance')}</h2>
           <p className="mt-2 text-sm text-gray-600">{t('dashboard.noProposals')}</p>
+        </section>
+
+        <section id="recent-swaps" className="lg:col-span-2">
+          <ErrorBoundary>
+            <RecentSwaps />
+          </ErrorBoundary>
         </section>
 
         <section id="portfolio" className="card lg:col-span-2">
