@@ -40,3 +40,6 @@ tsconfig.tsbuildinfo
 /playwright-report/
 /test-results/
 
+# synpress cache (MetaMask extension binary + wallet setup state)
+/.cache-synpress/
+
