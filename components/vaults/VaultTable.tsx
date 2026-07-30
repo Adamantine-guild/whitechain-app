@@ -1,33 +1,54 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { VaultCardMobile, type VaultData } from './VaultCardMobile';
 import { Lock, Unlock, RefreshCw, Check, TrendingUp } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
 import { useTranslation } from 'react-i18next';
+import { useProtocolStats } from '@/lib/hooks/queries/useProtocolStats';
 
 export function VaultTable() {
   const { t } = useTranslation();
   const { address, isConnected } = useAccount();
   const { data: balanceData } = useBalance({ address });
 
-  // Mock vaults state
-  const [vaults, setVaults] = useState<VaultData[]>([
-    { id: 'usdc', name: 'USDC Staking Vault', asset: 'USDC', apy: 4.5, tvl: '$12,500,000', userStake: 0.0 },
-    { id: 'eth', name: 'Ethereum Yield Vault', asset: 'ETH', apy: 3.2, tvl: '4,820 ETH', userStake: 0.0 },
-    { id: 'wbtc', name: 'WBTC Core Vault', asset: 'WBTC', apy: 2.1, tvl: '320 WBTC', userStake: 0.0 }
-  ]);
+  const { data: protocolStats, isLoading, isError, error } = useProtocolStats();
 
-  // Simulated native balance that the user can stake/unstake from
+  const [userStakes, setUserStakes] = useState<Record<string, number>>({});
   const [simulatedBalance, setSimulatedBalance] = useState(10.0);
 
-  // Sync with localStorage on load
+  const vaults: VaultData[] = useMemo(() => {
+    const source = protocolStats?.vaults ?? [];
+    if (source.length === 0) {
+      return [
+        { id: 'usdc', name: 'USDC Staking Vault', asset: 'USDC', apy: 4.5, tvl: '$12,500,000', userStake: 0.0 },
+        { id: 'eth', name: 'Ethereum Yield Vault', asset: 'ETH', apy: 3.2, tvl: '4,820 ETH', userStake: 0.0 },
+        { id: 'wbtc', name: 'WBTC Core Vault', asset: 'WBTC', apy: 2.1, tvl: '320 WBTC', userStake: 0.0 },
+      ];
+    }
+    return source.map((v) => ({
+      id: v.id,
+      name: v.name,
+      asset: v.asset,
+      apy: v.apy,
+      tvl: v.tvlFormatted,
+      userStake: userStakes[v.id] ?? 0,
+    }));
+  }, [protocolStats, userStakes]);
+
+  // Sync userStakes from localStorage on load
   useEffect(() => {
     const saved = localStorage.getItem('whitechain-vaults-state');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.vaults) setVaults(parsed.vaults);
+        if (parsed.vaults) {
+          const stakes: Record<string, number> = {};
+          for (const v of parsed.vaults) {
+            stakes[v.id] = v.userStake ?? 0;
+          }
+          setUserStakes(stakes);
+        }
         if (typeof parsed.simulatedBalance === 'number') setSimulatedBalance(parsed.simulatedBalance);
       } catch (e) {
         // ignore
@@ -43,10 +64,14 @@ export function VaultTable() {
   }, [balanceData]);
 
   // Helper to persist state
-  const saveState = (updatedVaults: VaultData[], updatedBalance: number) => {
+  const saveState = (updatedStakes: Record<string, number>, updatedBalance: number) => {
+    const vaultList = (protocolStats?.vaults ?? []).map((v) => ({
+      id: v.id,
+      userStake: updatedStakes[v.id] ?? 0,
+    }));
     localStorage.setItem(
       'whitechain-vaults-state',
-      JSON.stringify({ vaults: updatedVaults, simulatedBalance: updatedBalance })
+      JSON.stringify({ vaults: vaultList, simulatedBalance: updatedBalance })
     );
   };
 
@@ -54,16 +79,11 @@ export function VaultTable() {
   const handleStake = async (vaultId: string, amount: number): Promise<void> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const updatedVaults = vaults.map((v) => {
-          if (v.id === vaultId) {
-            return { ...v, userStake: v.userStake + amount };
-          }
-          return v;
-        });
+        const updatedStakes = { ...userStakes, [vaultId]: (userStakes[vaultId] ?? 0) + amount };
         const updatedBalance = simulatedBalance - amount;
-        setVaults(updatedVaults);
+        setUserStakes(updatedStakes);
         setSimulatedBalance(updatedBalance);
-        saveState(updatedVaults, updatedBalance);
+        saveState(updatedStakes, updatedBalance);
         resolve();
       }, 1500);
     });
@@ -72,16 +92,12 @@ export function VaultTable() {
   const handleUnstake = async (vaultId: string, amount: number): Promise<void> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const updatedVaults = vaults.map((v) => {
-          if (v.id === vaultId) {
-            return { ...v, userStake: Math.max(0, v.userStake - amount) };
-          }
-          return v;
-        });
+        const current = userStakes[vaultId] ?? 0;
+        const updatedStakes = { ...userStakes, [vaultId]: Math.max(0, current - amount) };
         const updatedBalance = simulatedBalance + amount;
-        setVaults(updatedVaults);
+        setUserStakes(updatedStakes);
         setSimulatedBalance(updatedBalance);
-        saveState(updatedVaults, updatedBalance);
+        saveState(updatedStakes, updatedBalance);
         resolve();
       }, 1500);
     });
