@@ -90,7 +90,6 @@ export default function DashboardPage() {
           <PluginGrid />
         </ErrorBoundary>
       </div>
-
       <SendModal isOpen={sendOpen} onClose={() => setSendOpen(false)} />
     </DashboardLayout>
   );
