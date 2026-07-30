@@ -32,7 +32,16 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     // Requirement: log the error to console.
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Requirement: log to external monitoring (e.g., Sentry) if configured.
+    if (typeof window !== 'undefined' && (window as any).Sentry) {
+      (window as any).Sentry.captureException(error, { extra: errorInfo });
+    }
   }
+
+  handleRetry = (): void => {
+    this.setState({ hasError: false });
+  };
 
   render(): React.ReactNode {
     if (this.state.hasError) {
@@ -46,6 +55,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             <p className="mt-2 text-sm text-gray-600">
               An unexpected error occurred while rendering this section.
             </p>
+            <button
+              type="button"
+              className="btn mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              onClick={this.handleRetry}
+            >
+              Try Again
+            </button>
           </div>
         </div>
       );

@@ -1,0 +1,188 @@
+{
+  "common": {
+    "connectWallet": "ウォレットを接続",
+    "disconnect": "切断",
+    "close": "閉じる",
+    "cancel": "キャンセル",
+    "send": "送信",
+    "max": "最大",
+    "loading": "読み込み中…",
+    "theme": "テーマ",
+    "save": "保存",
+    "confirm": "確認",
+    "stake": "ステーク",
+    "unstake": "アンステーク",
+    "speedUp": "スピードアップ"
+  },
+  "home": {
+    "welcome": "WhiteChain へようこそ",
+    "connectPrompt": "ナビバーからウォレットを接続して始めましょう。"
+  },
+  "nav": {
+    "home": "ホーム",
+    "marketplace": "マーケットプレイス",
+    "about": "概要",
+    "openMenu": "ナビゲーションメニューを開く",
+    "closeMenu": "ナビゲーションメニューを閉じる",
+    "mobileNav": "モバイルナビゲーション"
+  },
+  "dashboard": {
+    "overview": "概要",
+    "staking": "ステーキング",
+    "governance": "ガバナンス",
+    "portfolio": "ポートフォリオ",
+    "plugins": "プラグイン",
+    "showMenu": "メニューを表示",
+    "hideMenu": "メニューを非表示",
+    "noStakes": "アクティブなステークはまだありません。",
+    "noProposals": "公開中の提案はありません。",
+    "sendAsset": "資産を送信"
+  },
+  "wallet": {
+    "connectWallet": "ウォレットを接続",
+    "connectionRejected": "接続リクエストが拒否されました。",
+    "ledgerUnplugged": "Ledger が取り外されました。USB で再接続してもう一度お試しください。",
+    "ledgerOpenApp": "Ledger でイーサリアムアプリを開いてから再試行してください。",
+    "webUsbUnavailable": "WebUSB はここでは利用できません。HTTPS または localhost 上の Chromium ベースのブラウザをご使用ください。"
+  },
+  "send": {
+    "sendAsset": "資産を送信",
+    "balance": "残高",
+    "recipientAddress": "受取人アドレス",
+    "amountWei": "金額（wei）",
+    "percentOfBalance": "利用可能残高の割合",
+    "gasLimit": "ガスリミット",
+    "percentageLabel": "送信する残高の割合",
+    "noWallet": "ウォレットが検出されません。送信するにはウォレットを接続してください。",
+    "txRejected": "トランザクションが拒否または失敗しました。"
+  },
+  "copyAddress": {
+    "copyToClipboard": "アドレスをクリップボードにコピー",
+    "copied": "コピーしました！",
+    "copyBlocked": "コピーがブロックされました"
+  },
+  "balance": {
+    "loading": "残高を読み込み中"
+  },
+  "activity": {
+    "cachedActivity": "キャッシュされたアクティビティ",
+    "fromCache": "IndexedDBキャッシュから提供（即時 / オフライン）。",
+    "backfilled": "RPCからバックフィルされました。",
+    "lastSync": "最終同期",
+    "empty": {
+      "headline": "まだアクティビティがありません",
+      "description": "プロトコルの使用を開始すると、トランザクション履歴がここに表示されます。トークンをスワップしたり、Vaultにステークしたり、dAppを探索して始めましょう。",
+      "exploreVaults": "Vaultを探索",
+      "swapTokens": "トークンをスワップ",
+      "connectHeadline": "ウォレットを接続",
+      "connectDescription": "ウォレットを接続してトランザクション履歴とアクティビティを表示します。"
+    }
+  },
+  "history": {
+    "hash": "ハッシュ",
+    "type": "種類",
+    "amount": "金額",
+    "title": "取引履歴",
+    "transactionsSummary": "件のトランザクション（モックデータ）— {{totalPages}} ページ中 {{page}} ページ目",
+    "prev": "前へ",
+    "next": "次へ",
+    "page": "{{page}} / {{totalPages}} ページ"
+  },
+  "assets": {
+    "title": "資産"
+  },
+  "mempool": {
+    "pendingTransactions": "保留中のトランザクション",
+    "liveTracking": "ライブメンプール追跡",
+    "connected": "接続済み",
+    "notConnected": "未接続",
+    "noPending": "保留中のトランザクションはありません。",
+    "stuck": "スタック",
+    "stuckWarning": "件のトランザクションがスタックしているようです。上のスピードアップまたはキャンセルを使用してください。",
+    "speedUp": "スピードアップ",
+    "cancel": "キャンセル",
+    "noWallet": "注入されたウォレットが見つかりません。ウォレットを接続してください。"
+  },
+  "txToasts": {
+    "pending": "トランザクション処理中…",
+    "confirmWallet": "ウォレットでトランザクションを確認してください。",
+    "sent": "トランザクション送信済み",
+    "broadcast": "トランザクションがネットワークにブロードキャストされました。",
+    "submitted": "トランザクションが送信されました。",
+    "viewExplorer": "エクスプローラーで表示",
+    "failed": "トランザクション失敗",
+    "rejected": "トランザクションが拒否または失敗しました。"
+  },
+  "slippage": {
+    "tolerance": "スリッページ許容範囲: {{value}}%。クリックして調整。",
+    "title": "スリッページ許容範囲",
+    "description": "価格がこれ以上変動した場合、トランザクションは取り消されます。",
+    "quickSelect": "クイック選択",
+    "custom": "カスタム",
+    "setTo": "スリッページを {{value}}% に設定",
+    "highWarning": "高スリッページ警告",
+    "highWarningDesc": "スリッページを {{threshold}}% 以上に設定すると、サンドイッチ攻撃のリスクが高まります。より低い値をご検討ください。",
+    "currentTolerance": "現在の許容範囲"
+  },
+  "vaults": {
+    "balanceCenter": "ボールト残高センター",
+    "walletNotConnected": "ウォレット未接続（シミュレーションモード）",
+    "availableBalance": "利用可能なネイティブ残高",
+    "vault": "ボールト",
+    "apy": "年利回り",
+    "tvl": "総ロック量",
+    "yourStake": "あなたのステーク",
+    "actions": "アクション",
+    "asset": "資産",
+    "enterAmount": "金額を入力：",
+    "useMax": "最大値を使用",
+    "confirmStake": "ステークを確認",
+    "confirmUnstake": "アンステークを確認",
+    "cancel": "キャンセル",
+    "txSucceeded": "トランザクション成功！ダッシュボードが更新されました。",
+    "invalidAmount": "有効な正の金額を入力してください。",
+    "insufficientBalance": "残高不足です。最大利用可能額: {{max}}。",
+    "txFailed": "トランザクション失敗。もう一度お試しください。"
+  },
+  "vaultCard": {
+    "stake": "ステーク",
+    "unstake": "アンステーク",
+    "stakeDetails": "{{name}} ステーキング詳細",
+    "assetLabel": "資産",
+    "tvl": "総ロック量",
+    "yourStake": "あなたのステーク",
+    "amountLabel": "{{action}} 金額",
+    "useMax": "最大値を使用",
+    "processing": "処理中…",
+    "confirmStake": "ステークを確認",
+    "confirmUnstake": "アンステークを確認",
+    "cancel": "キャンセル",
+    "txSucceeded": "トランザクション成功！",
+    "invalidAmount": "有効な正の金額を入力してください。",
+    "insufficientBalance": "残高不足です。最大利用可能額: {{max}}。",
+    "txFailed": "トランザクション失敗。もう一度お試しください。"
+  },
+  "plugins": {
+    "communityPlugins": "コミュニティプラグイン",
+    "pluginLoaded_one": "{{count}} 個のプラグインが読み込まれました",
+    "pluginLoaded_other": "{{count}} 個のプラグインが読み込まれました",
+    "permissions": "権限",
+    "pluginError": "このプラグインは重大なエラーが発生し、一時停止されました。"
+  },
+  "sandbox": {
+    "pluginError": "プラグインエラー",
+    "loadingPlugin": "プラグインを読み込み中…",
+    "unknownError": "不明なエラーが発生しました。"
+  },
+  "pluginCard": {
+    "suspended": "このプラグインは重大なエラーが発生し、一時停止されました。"
+  },
+  "language": {
+    "selector": "言語を選択",
+    "en": "English",
+    "es": "Español",
+    "zh": "中文",
+    "ja": "日本語",
+    "ar": "العربية"
+  }
+}

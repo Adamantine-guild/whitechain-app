@@ -43,11 +43,18 @@ describe('Avatar', () => {
 
   it('renders the resolved ENS avatar as an image', () => {
     hoisted.ensName = 'vitalik.eth';
-    hoisted.avatarUrl = 'https://example.com/avatar.png';
+    hoisted.avatarUrl = 'https://metadata.ens.domains/mainnet/avatar/vitalik.eth';
     render(<Avatar address={ADDRESS} />);
     const img = screen.getByRole('img', { name: 'vitalik.eth avatar' }) as HTMLImageElement;
     expect(img.tagName).toBe('IMG');
-    expect(img.src).toBe('https://example.com/avatar.png');
+    expect(img.getAttribute('loading')).toBe('lazy');
+    expect(img.width).toBe(32);
+    expect(img.height).toBe(32);
+    const optimizedUrl = new URL(img.src);
+    expect(optimizedUrl.pathname).toBe('/_next/image');
+    expect(optimizedUrl.searchParams.get('url')).toBe(
+      'https://metadata.ens.domains/mainnet/avatar/vitalik.eth'
+    );
   });
 
   it('falls back to the blocky circle if the image fails to load', () => {

@@ -2,7 +2,9 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDisconnect, useAccount } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 import { Avatar } from './Avatar';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -15,10 +17,13 @@ function shortenAddress(address: string) {
  * wallet-level disconnect. Per issue #9.
  */
 export function ProfileDropdown() {
+  const { t } = useTranslation();
   const { address } = useAccount();
   const { disconnect } = useDisconnect();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  useModalA11y(open, () => setOpen(false), ref);
 
   // Close the menu on outside click.
   useEffect(() => {
@@ -59,7 +64,7 @@ export function ProfileDropdown() {
               setOpen(false);
             }}
           >
-            Disconnect
+            {t('common.disconnect')}
           </button>
         </div>
       )}
