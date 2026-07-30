@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useMempool, type PendingTransaction } from '@/lib/mempool/MempoolProvider';
+import { useTranslation } from 'react-i18next';
 
 /** Minimal EIP-1193 provider shape we rely on. */
 interface Eip1193Provider {
@@ -40,6 +41,7 @@ async function cancelOrSpeedUp(
 }
 
 export function PendingTransactions() {
+  const { t } = useTranslation();
   const { pending, stuck, connected } = useMempool();
 
   if (!connected && pending.length === 0) {
@@ -59,13 +61,13 @@ export function PendingTransactions() {
 
   return (
     <section id="mempool" className="card lg:col-span-2">
-      <h2 className="text-sm font-semibold text-gray-900">Pending transactions</h2>
+      <h2 className="text-sm font-semibold text-gray-900">{t('mempool.pendingTransactions')}</h2>
       <p className="mt-1 text-xs text-gray-500">
-        Live mempool tracking{connected ? ' (connected)' : ' (not connected)'}.
+        {t('mempool.liveTracking')}{connected ? ` (${t('mempool.connected')})` : ` (${t('mempool.notConnected')})`}.
       </p>
 
       {pending.length === 0 ? (
-        <p className="mt-2 text-sm text-gray-600">No pending transactions.</p>
+        <p className="mt-2 text-sm text-gray-600">{t('mempool.noPending')}</p>
       ) : (
         <ul className="mt-3 space-y-2">
           {pending.map((tx) => (
@@ -78,7 +80,7 @@ export function PendingTransactions() {
               </span>
               {tx.status === 'stuck' && (
                 <span className="rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
-                  Stuck
+                  {t('mempool.stuck')}
                 </span>
               )}
               <span className="flex gap-2">
@@ -87,14 +89,14 @@ export function PendingTransactions() {
                   className="btn"
                   onClick={() => handleAction('speedup', tx)}
                 >
-                  Speed up
+                  {t('mempool.speedUp')}
                 </button>
                 <button
                   type="button"
                   className="btn"
                   onClick={() => handleAction('cancel', tx)}
                 >
-                  Cancel
+                  {t('mempool.cancel')}
                 </button>
               </span>
             </li>
@@ -104,7 +106,7 @@ export function PendingTransactions() {
 
       {stuck.length > 0 && (
         <p className="mt-2 text-xs text-amber-700">
-          {stuck.length} transaction(s) appear stuck. Use Speed up or Cancel above.
+          {stuck.length} {t('mempool.stuckWarning')}
         </p>
       )}
     </section>

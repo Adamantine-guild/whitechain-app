@@ -2,6 +2,7 @@
 
 import { toast } from 'sonner';
 import { type Hash, type Chain } from 'viem';
+import { t } from '@/lib/i18n/helpers';
 
 /** Build a block-explorer transaction URL for the active chain. */
 export function explorerTxUrl(chain: Chain | undefined, txHash: Hash): string | null {
@@ -33,8 +34,8 @@ export function notifyTx(
   opts: NotifyTxOptions = {}
 ): string | number | void {
   if (state === 'pending') {
-    return toast.loading('Transaction pending…', {
-      description: 'Confirm the transaction in your wallet.',
+    return toast.loading(t('txToasts.pending', 'Transaction pending…'), {
+      description: t('txToasts.confirmWallet', 'Confirm the transaction in your wallet.'),
     });
   }
 
@@ -44,8 +45,8 @@ export function notifyTx(
     return;
   }
 
-  return toast.error('Transaction failed', {
-    description: opts.chain ? undefined : undefined,
+  return toast.error(t('txToasts.failed', 'Transaction failed'), {
+    duration: Infinity,
   });
 }
 
@@ -53,15 +54,15 @@ export function notifyTx(
 export function notifyTxSuccess(txHash: Hash, chain?: Chain, onSuccess?: () => void) {
   const url = explorerTxUrl(chain, txHash);
   const isRealHash = /^0x[0-9a-fA-F]{64}$/.test(txHash);
-  toast.success('Transaction sent', {
+  toast.success(t('txToasts.sent', 'Transaction sent'), {
     description: isRealHash
-      ? 'Your transaction was broadcast to the network.'
-      : 'Your transaction was submitted.',
+      ? t('txToasts.broadcast', 'Your transaction was broadcast to the network.')
+      : t('txToasts.submitted', 'Your transaction was submitted.'),
     duration: 5000,
     action:
       url && isRealHash
         ? {
-            label: 'View on explorer',
+            label: t('txToasts.viewExplorer', 'View on explorer'),
             onClick: () => window.open(url, '_blank', 'noopener,noreferrer'),
           }
         : undefined,
@@ -69,17 +70,29 @@ export function notifyTxSuccess(txHash: Hash, chain?: Chain, onSuccess?: () => v
   onSuccess?.();
 }
 
+/**
+ * Convenience: success toast with unified styling but no explorer link,
+ * for actions that succeed without producing an on-chain tx hash yet.
+ */
+export function notifyTxSuccessLocal(message: string) {
+  toast.success(t('txToasts.sent', 'Transaction sent'), {
+    description: message,
+    duration: 5000,
+  });
+}
+
 /** Convenience: error toast with a user-safe message. */
 export function notifyTxError(message: string) {
-  toast.error('Transaction failed', {
-    description: message || 'The transaction was rejected or failed.',
+  toast.error(t('txToasts.failed', 'Transaction failed'), {
+    description: message || t('txToasts.rejected', 'The transaction was rejected or failed.'),
+    duration: Infinity,
   });
 }
 
 /** Convenience: pending toast; returns the id so it can be dismissed on settle. */
 export function notifyTxPending(): string | number {
-  return toast.loading('Transaction pending…', {
-    description: 'Confirm the transaction in your wallet.',
+  return toast.loading(t('txToasts.pending', 'Transaction pending…'), {
+    description: t('txToasts.confirmWallet', 'Confirm the transaction in your wallet.'),
   });
 }
 

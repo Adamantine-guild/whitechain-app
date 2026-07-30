@@ -1,0 +1,188 @@
+{
+  "common": {
+    "connectWallet": "连接钱包",
+    "disconnect": "断开连接",
+    "close": "关闭",
+    "cancel": "取消",
+    "send": "发送",
+    "max": "最大",
+    "loading": "加载中…",
+    "theme": "主题",
+    "save": "保存",
+    "confirm": "确认",
+    "stake": "质押",
+    "unstake": "解除质押",
+    "speedUp": "加速"
+  },
+  "home": {
+    "welcome": "欢迎来到 WhiteChain",
+    "connectPrompt": "从导航栏连接您的钱包以开始使用。"
+  },
+  "nav": {
+    "home": "首页",
+    "marketplace": "市场",
+    "about": "关于",
+    "openMenu": "打开导航菜单",
+    "closeMenu": "关闭导航菜单",
+    "mobileNav": "移动端导航"
+  },
+  "dashboard": {
+    "overview": "概览",
+    "staking": "质押",
+    "governance": "治理",
+    "portfolio": "投资组合",
+    "plugins": "插件",
+    "showMenu": "显示菜单",
+    "hideMenu": "隐藏菜单",
+    "noStakes": "暂无活跃质押。",
+    "noProposals": "暂无公开提案。",
+    "sendAsset": "发送资产"
+  },
+  "wallet": {
+    "connectWallet": "连接钱包",
+    "connectionRejected": "连接请求被拒绝。",
+    "ledgerUnplugged": "您的 Ledger 已断开连接。请通过 USB 重新连接后重试。",
+    "ledgerOpenApp": "请在您的 Ledger 上打开以太坊应用，然后重试。",
+    "webUsbUnavailable": "此处不支持 WebUSB。请使用基于 Chromium 的浏览器，通过 HTTPS 或 localhost 访问。"
+  },
+  "send": {
+    "sendAsset": "发送资产",
+    "balance": "余额",
+    "recipientAddress": "收款地址",
+    "amountWei": "金额（wei）",
+    "percentOfBalance": "可用余额百分比",
+    "gasLimit": "Gas 限制",
+    "percentageLabel": "发送余额的百分比",
+    "noWallet": "未检测到钱包。请连接钱包以发送交易。",
+    "txRejected": "交易被拒绝或失败。"
+  },
+  "copyAddress": {
+    "copyToClipboard": "复制地址到剪贴板",
+    "copied": "已复制！",
+    "copyBlocked": "复制被阻止"
+  },
+  "balance": {
+    "loading": "正在加载余额"
+  },
+  "activity": {
+    "cachedActivity": "缓存的活动",
+    "fromCache": "从IndexedDB缓存提供（即时/离线）。",
+    "backfilled": "从RPC回填。",
+    "lastSync": "最后同步",
+    "empty": {
+      "headline": "尚无活动",
+      "description": "一旦您开始使用协议，您的交易历史将出现在此处。交换代币、在Vault中质押或探索dApp以开始使用。",
+      "exploreVaults": "探索Vault",
+      "swapTokens": "交换代币",
+      "connectHeadline": "连接您的钱包",
+      "connectDescription": "连接您的钱包以查看交易历史和活动。"
+    }
+  },
+  "history": {
+    "hash": "哈希",
+    "type": "类型",
+    "amount": "金额",
+    "title": "交易历史",
+    "transactionsSummary": "笔交易（模拟数据）— 第 {{page}} 页，共 {{totalPages}} 页",
+    "prev": "上一页",
+    "next": "下一页",
+    "page": "第 {{page}} / {{totalPages}} 页"
+  },
+  "assets": {
+    "title": "资产"
+  },
+  "mempool": {
+    "pendingTransactions": "待处理交易",
+    "liveTracking": "实时内存池追踪",
+    "connected": "已连接",
+    "notConnected": "未连接",
+    "noPending": "没有待处理的交易。",
+    "stuck": "卡住",
+    "stuckWarning": "笔交易似乎已卡住。请使用上方的「加速」或「取消」。",
+    "speedUp": "加速",
+    "cancel": "取消",
+    "noWallet": "未找到注入的钱包。请连接钱包。"
+  },
+  "txToasts": {
+    "pending": "交易处理中…",
+    "confirmWallet": "请在钱包中确认交易。",
+    "sent": "交易已发送",
+    "broadcast": "您的交易已广播至网络。",
+    "submitted": "您的交易已提交。",
+    "viewExplorer": "在浏览器中查看",
+    "failed": "交易失败",
+    "rejected": "交易被拒绝或失败。"
+  },
+  "slippage": {
+    "tolerance": "滑点容差：{{value}}%。点击调整。",
+    "title": "滑点容差",
+    "description": "如果价格变动超过此值，您的交易将被撤销。",
+    "quickSelect": "快速选择",
+    "custom": "自定义",
+    "setTo": "设置滑点为 {{value}}%",
+    "highWarning": "高滑点警告",
+    "highWarningDesc": "将滑点设置为超过 {{threshold}}% 会使您面临三明治攻击的高风险。建议使用更低的值。",
+    "currentTolerance": "当前容差"
+  },
+  "vaults": {
+    "balanceCenter": "金库余额中心",
+    "walletNotConnected": "钱包未连接（模拟模式）",
+    "availableBalance": "可用原生余额",
+    "vault": "金库",
+    "apy": "年化收益率",
+    "tvl": "总锁仓量",
+    "yourStake": "您的质押",
+    "actions": "操作",
+    "asset": "资产",
+    "enterAmount": "输入金额以",
+    "useMax": "使用最大值",
+    "confirmStake": "确认质押",
+    "confirmUnstake": "确认解除质押",
+    "cancel": "取消",
+    "txSucceeded": "交易成功，仪表板已更新！",
+    "invalidAmount": "请输入有效的正数金额。",
+    "insufficientBalance": "余额不足。最大可用：{{max}}。",
+    "txFailed": "交易失败。请重试。"
+  },
+  "vaultCard": {
+    "stake": "质押",
+    "unstake": "解除质押",
+    "stakeDetails": "{{name}} 质押详情",
+    "assetLabel": "资产",
+    "tvl": "总锁仓量",
+    "yourStake": "您的质押",
+    "amountLabel": "{{action}} 金额",
+    "useMax": "使用最大值",
+    "processing": "处理中…",
+    "confirmStake": "确认质押",
+    "confirmUnstake": "确认解除质押",
+    "cancel": "取消",
+    "txSucceeded": "交易成功！",
+    "invalidAmount": "请输入有效的正数金额。",
+    "insufficientBalance": "余额不足。最大可用：{{max}}。",
+    "txFailed": "交易失败。请重试。"
+  },
+  "plugins": {
+    "communityPlugins": "社区插件",
+    "pluginLoaded_one": "已加载 {{count}} 个插件",
+    "pluginLoaded_other": "已加载 {{count}} 个插件",
+    "permissions": "权限",
+    "pluginError": "此插件遇到严重错误，已被暂停。"
+  },
+  "sandbox": {
+    "pluginError": "插件错误",
+    "loadingPlugin": "正在加载插件…",
+    "unknownError": "发生未知错误。"
+  },
+  "pluginCard": {
+    "suspended": "此插件遇到严重错误，已被暂停。"
+  },
+  "language": {
+    "selector": "选择语言",
+    "en": "English",
+    "es": "Español",
+    "zh": "中文",
+    "ja": "日本語",
+    "ar": "العربية"
+  }
+}
