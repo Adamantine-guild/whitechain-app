@@ -14,6 +14,7 @@ import { PluginGrid } from '@/components/dashboard/PluginGrid';
 import { SwapCard } from '@/components/swap/SwapCard';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ProtocolStatsBar } from '@/components/dashboard/ProtocolStatsBar';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -25,6 +26,12 @@ export default function DashboardPage() {
         <section id="swap" className="lg:col-span-2">
           <ErrorBoundary>
             <SwapCard />
+          </ErrorBoundary>
+        </section>
+
+        <section id="protocol-stats" className="lg:col-span-2">
+          <ErrorBoundary>
+            <ProtocolStatsBar />
           </ErrorBoundary>
         </section>
 
