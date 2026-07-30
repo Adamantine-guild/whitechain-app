@@ -5,7 +5,7 @@ import { ArrowDownUp, RefreshCw } from 'lucide-react';
 import { KNOWN_TOKENS } from '@/lib/services/RouteOptimizer';
 import { useRouteOptimizer } from '@/lib/hooks/useRouteOptimizer';
 import { SwapRouteDisplay } from './SwapRouteDisplay';
-import { toast } from 'sonner';
+import { notifyTxError, notifyTxSuccessLocal } from '@/components/TxToasts';
 
 export function SwapCard() {
   const [tokenInSymbol, setTokenInSymbol] = useState('USDC');
@@ -49,11 +49,11 @@ export function SwapCard() {
 
   const handleExecuteSwap = () => {
     if (!route) {
-      toast.error('No valid route available for swap');
+      notifyTxError('No valid route available for swap');
       return;
     }
 
-    toast.success(
+    notifyTxSuccessLocal(
       `Swapped ${amountInStr} ${tokenInSymbol} for ~${formatOutput()} ${tokenOutSymbol} via ${
         route.hops.length > 1 ? 'multi-hop route' : 'direct route'
       }`
