@@ -106,6 +106,11 @@ describe('notifyTxError / notifyTxPending', () => {
     expect(toastMock.error.mock.calls[0][1].description).toBe('User rejected');
   });
 
+  it('notifyTxError requires manual dismissal (duration: Infinity)', () => {
+    notifyTxError('User rejected');
+    expect(toastMock.error.mock.calls[0][1].duration).toBe(Infinity);
+  });
+
   it('notifyTxPending shows a loading toast', () => {
     notifyTxPending();
     expect(toastMock.loading).toHaveBeenCalledTimes(1);

@@ -46,7 +46,7 @@ export function notifyTx(
   }
 
   return toast.error(t('txToasts.failed', 'Transaction failed'), {
-    description: opts.chain ? undefined : undefined,
+    duration: Infinity,
   });
 }
 
@@ -70,10 +70,22 @@ export function notifyTxSuccess(txHash: Hash, chain?: Chain, onSuccess?: () => v
   onSuccess?.();
 }
 
+/**
+ * Convenience: success toast with unified styling but no explorer link,
+ * for actions that succeed without producing an on-chain tx hash yet.
+ */
+export function notifyTxSuccessLocal(message: string) {
+  toast.success(t('txToasts.sent', 'Transaction sent'), {
+    description: message,
+    duration: 5000,
+  });
+}
+
 /** Convenience: error toast with a user-safe message. */
 export function notifyTxError(message: string) {
   toast.error(t('txToasts.failed', 'Transaction failed'), {
     description: message || t('txToasts.rejected', 'The transaction was rejected or failed.'),
+    duration: Infinity,
   });
 }
 
