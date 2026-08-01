@@ -15,6 +15,7 @@ import { SwapCard } from '@/components/swap/SwapCard';
 
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { ProtocolStatsBar } from '@/components/dashboard/ProtocolStatsBar';
+import { RecentSwaps } from '@/components/dashboard/RecentSwaps';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
@@ -50,6 +51,12 @@ export default function DashboardPage() {
           <p className="mt-2 text-sm text-gray-600">{t('dashboard.noProposals')}</p>
         </section>
 
+        <section id="recent-swaps" className="lg:col-span-2">
+          <ErrorBoundary>
+            <RecentSwaps />
+          </ErrorBoundary>
+        </section>
+
         <section id="portfolio" className="card lg:col-span-2">
           <ErrorBoundary>
             <PortfolioAssets />
@@ -83,7 +90,6 @@ export default function DashboardPage() {
           <PluginGrid />
         </ErrorBoundary>
       </div>
-
       <SendModal isOpen={sendOpen} onClose={() => setSendOpen(false)} />
     </DashboardLayout>
   );

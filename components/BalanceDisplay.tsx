@@ -1,6 +1,6 @@
 'use client';
 
-import { useAccount } from 'wagmi';
+import { useAccount, useDisconnect, useWatchBlockNumber, useBalance } from 'wagmi';
 import { useOptimisticBalance } from '@/lib/hooks/useOptimisticBalance';
 
 const BalanceDisplay = () => {
@@ -15,6 +15,14 @@ const BalanceDisplay = () => {
   } = useOptimisticBalance({
     address,
     query: { refetchOnWindowFocus: false },
+  });
+
+  // useBalance doesn't poll on its own, so nudge it every block to keep the
+  // figure in sync with on-chain state (deposits, withdrawals, gas spend).
+  useWatchBlockNumber({
+    onBlockNumber: () => {
+      refetch();
+    }
   });
 
   // No manual per-block refetch here: useBlockchainDataSync (mounted in
