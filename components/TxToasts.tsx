@@ -76,6 +76,18 @@ export function notifyTxError(message: string) {
   });
 }
 
+/**
+ * Neutral info toast when a user voluntarily cancels a signing request
+ * (EIP-1193 error code 4001). Dismisses any pending toast beforehand.
+ */
+export function notifyTxCancelled(toastId?: string | number | null) {
+  if (toastId != null) toast.dismiss(toastId);
+  toast.info('Transaction cancelled', {
+    description: 'The transaction was cancelled by the user.',
+    duration: 4000,
+  });
+}
+
 /** Convenience: pending toast; returns the id so it can be dismissed on settle. */
 export function notifyTxPending(): string | number {
   return toast.loading('Transaction pending…', {
