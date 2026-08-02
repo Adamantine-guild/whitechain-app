@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useTransactionSimulation } from '@/lib/hooks/useTransactionSimulation';
-
-const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
+import { simulatorSchema, type SimulatorFormValues } from '@/lib/validation/simulatorSchema';
 
 /**
  * Lets a user paste a destination address (+ optional value) and simulates the
@@ -12,20 +12,25 @@ const ADDRESS_RE = /^0x[a-fA-F0-9]{40}$/;
  * reverts the UI shows "This transaction will fail".
  */
 export function TransactionSimulator() {
-  const [to, setTo] = useState('');
-  const [value, setValue] = useState('');
   const { result, status, simulate, reset } = useTransactionSimulation();
 
-  const isValid = ADDRESS_RE.test(to);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<SimulatorFormValues>({
+    resolver: zodResolver(simulatorSchema),
+    mode: 'onChange',
+    defaultValues: { to: '', value: '' },
+  });
 
-  async function handleSimulate() {
-    if (!isValid) return;
+  const onSimulate = handleSubmit(async (values) => {
     await simulate({
       chainId: 1,
-      to: to as `0x${string}`,
-      value: value ? BigInt(value) : undefined
+      to: values.to as `0x${string}`,
+      value: values.value ? BigInt(values.value) : undefined,
     });
-  }
+  });
 
   return (
     <section id="simulator" className="card">
@@ -34,43 +39,51 @@ export function TransactionSimulator() {
         Preview a transaction before sending. The simulator warns you if it would fail.
       </p>
 
-      <div className="mt-4 flex flex-col gap-3">
+      <form className="mt-4 flex flex-col gap-3" onSubmit={onSimulate} noValidate>
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-gray-700">Destination address</span>
           <input
             type="text"
-            value={to}
-            onChange={(e) => {
-              setTo(e.target.value.trim());
-              reset();
-            }}
+            {...register('to')}
             placeholder="0x…"
             aria-label="Destination address"
+            aria-invalid={!!errors.to}
             className="rounded border border-gray-300 px-3 py-2 font-mono text-sm"
           />
+          {errors.to && (
+            <p role="alert" className="text-xs text-red-600">{errors.to.message}</p>
+          )}
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
           <span className="text-gray-700">Value (wei, optional)</span>
           <input
             type="text"
-            value={value}
-            onChange={(e) => setValue(e.target.value.replace(/[^0-9]/g, ''))}
+            {...register('value')}
+            onChange={(e) => {
+              // Only allow digits for the value field
+              const digitOnly = e.target.value.replace(/[^0-9]/g, '');
+              e.target.value = digitOnly;
+              register('value').onChange(e);
+            }}
             placeholder="0"
             aria-label="Value in wei"
+            aria-invalid={!!errors.value}
             className="rounded border border-gray-300 px-3 py-2 font-mono text-sm"
           />
+          {errors.value && (
+            <p role="alert" className="text-xs text-red-600">{errors.value.message}</p>
+          )}
         </label>
 
         <button
-          type="button"
-          onClick={handleSimulate}
+          type="submit"
           disabled={!isValid || status === 'simulating'}
           className="btn self-start"
         >
           {status === 'simulating' ? 'Simulating…' : 'Simulate transaction'}
         </button>
-      </div>
+      </form>
 
       {result && (
         <div

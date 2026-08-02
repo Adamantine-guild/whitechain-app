@@ -2,6 +2,7 @@
 
 import { toast } from 'sonner';
 import { type Hash, type Chain } from 'viem';
+import { t } from '@/lib/i18n/helpers';
 
 /** Build a block-explorer transaction URL for the active chain. */
 export function explorerTxUrl(chain: Chain | undefined, txHash: Hash): string | null {
@@ -33,8 +34,8 @@ export function notifyTx(
   opts: NotifyTxOptions = {}
 ): string | number | void {
   if (state === 'pending') {
-    return toast.loading('Transaction pending…', {
-      description: 'Confirm the transaction in your wallet.',
+    return toast.loading(t('txToasts.pending', 'Transaction pending…'), {
+      description: t('txToasts.confirmWallet', 'Confirm the transaction in your wallet.'),
     });
   }
 
@@ -44,8 +45,8 @@ export function notifyTx(
     return;
   }
 
-  return toast.error('Transaction failed', {
-    description: opts.chain ? undefined : undefined,
+  return toast.error(t('txToasts.failed', 'Transaction failed'), {
+    duration: Infinity,
   });
 }
 
@@ -53,15 +54,15 @@ export function notifyTx(
 export function notifyTxSuccess(txHash: Hash, chain?: Chain, onSuccess?: () => void) {
   const url = explorerTxUrl(chain, txHash);
   const isRealHash = /^0x[0-9a-fA-F]{64}$/.test(txHash);
-  toast.success('Transaction sent', {
+  toast.success(t('txToasts.sent', 'Transaction sent'), {
     description: isRealHash
-      ? 'Your transaction was broadcast to the network.'
-      : 'Your transaction was submitted.',
+      ? t('txToasts.broadcast', 'Your transaction was broadcast to the network.')
+      : t('txToasts.submitted', 'Your transaction was submitted.'),
     duration: 5000,
     action:
       url && isRealHash
         ? {
-            label: 'View on explorer',
+            label: t('txToasts.viewExplorer', 'View on explorer'),
             onClick: () => window.open(url, '_blank', 'noopener,noreferrer'),
           }
         : undefined,
@@ -69,10 +70,22 @@ export function notifyTxSuccess(txHash: Hash, chain?: Chain, onSuccess?: () => v
   onSuccess?.();
 }
 
+/**
+ * Convenience: success toast with unified styling but no explorer link,
+ * for actions that succeed without producing an on-chain tx hash yet.
+ */
+export function notifyTxSuccessLocal(message: string) {
+  toast.success(t('txToasts.sent', 'Transaction sent'), {
+    description: message,
+    duration: 5000,
+  });
+}
+
 /** Convenience: error toast with a user-safe message. */
 export function notifyTxError(message: string) {
-  toast.error('Transaction failed', {
-    description: message || 'The transaction was rejected or failed.',
+  toast.error(t('txToasts.failed', 'Transaction failed'), {
+    description: message || t('txToasts.rejected', 'The transaction was rejected or failed.'),
+    duration: Infinity,
   });
 }
 
@@ -90,9 +103,52 @@ export function notifyTxCancelled(toastId?: string | number | null) {
 
 /** Convenience: pending toast; returns the id so it can be dismissed on settle. */
 export function notifyTxPending(): string | number {
-  return toast.loading('Transaction pending…', {
-    description: 'Confirm the transaction in your wallet.',
+  return toast.loading(t('txToasts.pending', 'Transaction pending…'), {
+    description: t('txToasts.confirmWallet', 'Confirm the transaction in your wallet.'),
   });
+}
+
+/**
+ * Update a pending toast to a success or error state.
+ *
+ * Used by `useTransactionToast` and any component that wants to manually
+ * manage the pending → settled lifecycle of a single toast.
+ *
+ * @param toastId - The id returned by `notifyTxPending()`.
+ * @param state   - 'confirmed' (green, auto-dismiss 5s) or 'reverted' (red, persistent).
+ * @param opts    - Optional chain (for explorer link) and explorer URL override.
+ */
+export function notifyTxUpdate(
+  toastId: string | number,
+  state: 'confirmed' | 'reverted',
+  opts: { chain?: Chain; explorerUrl?: string } = {}
+) {
+  if (state === 'confirmed') {
+    const url = opts.explorerUrl ?? (opts.chain ? explorerTxUrl(opts.chain, '' as Hash) : null);
+    toast.success(t('txToasts.confirmed', 'Transaction confirmed'), {
+      id: toastId,
+      description: url
+        ? t('txToasts.broadcast', 'Your transaction was broadcast to the network.')
+        : t('txToasts.submitted', 'Your transaction was submitted.'),
+      duration: 5000,
+      action:
+        url
+          ? {
+              label: t('txToasts.viewExplorer', 'View on explorer'),
+              onClick: () => window.open(url, '_blank', 'noopener,noreferrer'),
+            }
+          : undefined,
+    });
+  } else {
+    toast.error(t('txToasts.reverted', 'Transaction reverted'), {
+      id: toastId,
+      description: t(
+        'txToasts.revertedDesc',
+        'The transaction was reverted on-chain. Please try again.'
+      ),
+      duration: Infinity,
+    });
+  }
 }
 
 export { toast };

@@ -1,0 +1,188 @@
+{
+  "common": {
+    "connectWallet": "Connect Wallet",
+    "disconnect": "Disconnect",
+    "close": "Close",
+    "cancel": "Cancel",
+    "send": "Send",
+    "max": "Max",
+    "loading": "Loading…",
+    "theme": "Theme",
+    "save": "Save",
+    "confirm": "Confirm",
+    "stake": "Stake",
+    "unstake": "Unstake",
+    "speedUp": "Speed up"
+  },
+  "home": {
+    "welcome": "Welcome to WhiteChain",
+    "connectPrompt": "Connect your wallet from the navbar to get started."
+  },
+  "nav": {
+    "home": "Home",
+    "marketplace": "Marketplace",
+    "about": "About",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu",
+    "mobileNav": "Mobile navigation"
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "staking": "Staking",
+    "governance": "Governance",
+    "portfolio": "Portfolio",
+    "plugins": "Plugins",
+    "showMenu": "Show menu",
+    "hideMenu": "Hide menu",
+    "noStakes": "No active stakes yet.",
+    "noProposals": "No open proposals.",
+    "sendAsset": "Send asset"
+  },
+  "wallet": {
+    "connectWallet": "Connect a wallet",
+    "connectionRejected": "Connection request was rejected.",
+    "ledgerUnplugged": "Your Ledger was unplugged. Reconnect it over USB and try again.",
+    "ledgerOpenApp": "Please open the Ethereum app on your Ledger, then try again.",
+    "webUsbUnavailable": "WebUSB is not available here. Use a Chromium-based browser over HTTPS or localhost."
+  },
+  "send": {
+    "sendAsset": "Send asset",
+    "balance": "Balance",
+    "recipientAddress": "Recipient address",
+    "amountWei": "Amount (wei)",
+    "percentOfBalance": "Percent of available balance",
+    "gasLimit": "Gas limit",
+    "percentageLabel": "Percentage of balance to send",
+    "noWallet": "No wallet detected. Connect a wallet to send.",
+    "txRejected": "The transaction was rejected or failed."
+  },
+  "copyAddress": {
+    "copyToClipboard": "Copy address to clipboard",
+    "copied": "Copied!",
+    "copyBlocked": "Copy blocked"
+  },
+  "balance": {
+    "loading": "Loading balance"
+  },
+  "activity": {
+    "cachedActivity": "Cached activity",
+    "fromCache": "Served from IndexedDB cache (instant / offline).",
+    "backfilled": "Backfilled from RPC.",
+    "lastSync": "Last sync",
+    "empty": {
+      "headline": "No Activity Yet",
+      "description": "Your transaction history will appear here once you start using the protocol. Swap tokens, stake in vaults, or explore the dApp to get started.",
+      "exploreVaults": "Explore Vaults",
+      "swapTokens": "Swap Tokens",
+      "connectHeadline": "Connect Your Wallet",
+      "connectDescription": "Connect your wallet to view your transaction history and activity."
+    }
+  },
+  "history": {
+    "hash": "Hash",
+    "type": "Type",
+    "amount": "Amount",
+    "title": "Transaction history",
+    "transactionsSummary": "transactions (mock data) — page {{page}} of {{totalPages}}",
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page {{page}} / {{totalPages}}"
+  },
+  "assets": {
+    "title": "Assets"
+  },
+  "mempool": {
+    "pendingTransactions": "Pending transactions",
+    "liveTracking": "Live mempool tracking",
+    "connected": "connected",
+    "notConnected": "not connected",
+    "noPending": "No pending transactions.",
+    "stuck": "Stuck",
+    "stuckWarning": "transaction(s) appear stuck. Use Speed up or Cancel above.",
+    "speedUp": "Speed up",
+    "cancel": "Cancel",
+    "noWallet": "No injected wallet found. Please connect a wallet."
+  },
+  "txToasts": {
+    "pending": "Transaction pending…",
+    "confirmWallet": "Confirm the transaction in your wallet.",
+    "sent": "Transaction sent",
+    "broadcast": "Your transaction was broadcast to the network.",
+    "submitted": "Your transaction was submitted.",
+    "viewExplorer": "View on explorer",
+    "failed": "Transaction failed",
+    "rejected": "The transaction was rejected or failed."
+  },
+  "slippage": {
+    "tolerance": "Slippage tolerance: {{value}}%. Click to adjust.",
+    "title": "Slippage Tolerance",
+    "description": "Your transaction will revert if the price moves by more than this.",
+    "quickSelect": "Quick select",
+    "custom": "Custom",
+    "setTo": "Set slippage to {{value}}%",
+    "highWarning": "High slippage warning",
+    "highWarningDesc": "Setting slippage above {{threshold}}% puts you at high risk of sandwich attacks. Consider a lower value.",
+    "currentTolerance": "Current tolerance"
+  },
+  "vaults": {
+    "balanceCenter": "Vault Balance Center",
+    "walletNotConnected": "Wallet not connected (Simulated Mode)",
+    "availableBalance": "Available Native Balance",
+    "vault": "Vault",
+    "apy": "APY",
+    "tvl": "Total Value Locked",
+    "yourStake": "Your Stake",
+    "actions": "Actions",
+    "asset": "Asset",
+    "enterAmount": "Enter amount to",
+    "useMax": "Use Max",
+    "confirmStake": "Confirm Stake",
+    "confirmUnstake": "Confirm Unstake",
+    "cancel": "Cancel",
+    "txSucceeded": "Transaction succeeded and dashboard updated!",
+    "invalidAmount": "Please enter a valid positive amount.",
+    "insufficientBalance": "Insufficient balance. Max available is {{max}}.",
+    "txFailed": "Transaction failed. Please try again."
+  },
+  "vaultCard": {
+    "stake": "Stake",
+    "unstake": "Unstake",
+    "stakeDetails": "{{name}} Staking Details",
+    "assetLabel": "Asset",
+    "tvl": "Total Value Locked",
+    "yourStake": "Your Deposited Stake",
+    "amountLabel": "{{action}} Amount",
+    "useMax": "Use Max",
+    "processing": "Processing…",
+    "confirmStake": "Confirm Stake",
+    "confirmUnstake": "Confirm Unstake",
+    "cancel": "Cancel",
+    "txSucceeded": "Transaction succeeded!",
+    "invalidAmount": "Please enter a valid positive amount.",
+    "insufficientBalance": "Insufficient balance. Max available is {{max}}.",
+    "txFailed": "Transaction failed. Please try again."
+  },
+  "plugins": {
+    "communityPlugins": "Community Plugins",
+    "pluginLoaded_one": "{{count}} plugin loaded",
+    "pluginLoaded_other": "{{count}} plugins loaded",
+    "permissions": "Permissions",
+    "pluginError": "This plugin encountered a critical error and has been suspended."
+  },
+  "sandbox": {
+    "pluginError": "Plugin error",
+    "loadingPlugin": "Loading plugin…",
+    "unknownError": "An unknown error occurred."
+  },
+  "pluginCard": {
+    "suspended": "This plugin encountered a critical error and has been suspended."
+  },
+  "language": {
+    "selector": "Select language",
+    "en": "English",
+    "es": "Español",
+    "zh": "中文",
+    "ja": "日本語",
+    "ar": "العربية"
+  }
+}

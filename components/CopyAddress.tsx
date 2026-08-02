@@ -1,9 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CheckIcon, CopyIcon } from './icons';
 
 export function CopyAddress({ address, className }: { address: string; className?: string }) {
+  const { t } = useTranslation();
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'denied'>('idle');
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function CopyAddress({ address, className }: { address: string; className
       <button
         type="button"
         onClick={handleCopy}
-        aria-label="Copy address to clipboard"
+        aria-label={t('copyAddress.copyToClipboard')}
         className={className ?? 'text-gray-400 hover:text-gray-700'}
       >
         {copyState === 'copied' ? (
@@ -40,7 +42,7 @@ export function CopyAddress({ address, className }: { address: string; className
           role="status"
           className="pointer-events-none absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white"
         >
-          {copyState === 'copied' ? 'Copied!' : 'Copy blocked'}
+          {copyState === 'copied' ? t('copyAddress.copied') : t('copyAddress.copyBlocked')}
         </span>
       )}
     </span>

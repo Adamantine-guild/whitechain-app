@@ -1,0 +1,188 @@
+{
+  "common": {
+    "connectWallet": "Conectar Billetera",
+    "disconnect": "Desconectar",
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "send": "Enviar",
+    "max": "Máx",
+    "loading": "Cargando…",
+    "theme": "Tema",
+    "save": "Guardar",
+    "confirm": "Confirmar",
+    "stake": "Depositar",
+    "unstake": "Retirar",
+    "speedUp": "Acelerar"
+  },
+  "home": {
+    "welcome": "Bienvenido a WhiteChain",
+    "connectPrompt": "Conecta tu billetera desde la barra de navegación para comenzar."
+  },
+  "nav": {
+    "home": "Inicio",
+    "marketplace": "Mercado",
+    "about": "Acerca de",
+    "openMenu": "Abrir menú de navegación",
+    "closeMenu": "Cerrar menú de navegación",
+    "mobileNav": "Navegación móvil"
+  },
+  "dashboard": {
+    "overview": "Resumen",
+    "staking": "Staking",
+    "governance": "Gobernanza",
+    "portfolio": "Portafolio",
+    "plugins": "Plugins",
+    "showMenu": "Mostrar menú",
+    "hideMenu": "Ocultar menú",
+    "noStakes": "No hay depósitos activos aún.",
+    "noProposals": "No hay propuestas abiertas.",
+    "sendAsset": "Enviar activo"
+  },
+  "wallet": {
+    "connectWallet": "Conectar una billetera",
+    "connectionRejected": "La solicitud de conexión fue rechazada.",
+    "ledgerUnplugged": "Tu Ledger fue desconectado. Reconéctalo por USB e inténtalo de nuevo.",
+    "ledgerOpenApp": "Por favor, abre la aplicación de Ethereum en tu Ledger e inténtalo de nuevo.",
+    "webUsbUnavailable": "WebUSB no está disponible aquí. Usa un navegador basado en Chromium sobre HTTPS o localhost."
+  },
+  "send": {
+    "sendAsset": "Enviar activo",
+    "balance": "Saldo",
+    "recipientAddress": "Dirección del destinatario",
+    "amountWei": "Cantidad (wei)",
+    "percentOfBalance": "Porcentaje del saldo disponible",
+    "gasLimit": "Límite de gas",
+    "percentageLabel": "Porcentaje del saldo a enviar",
+    "noWallet": "No se detectó billetera. Conecta una billetera para enviar.",
+    "txRejected": "La transacción fue rechazada o falló."
+  },
+  "copyAddress": {
+    "copyToClipboard": "Copiar dirección al portapapeles",
+    "copied": "¡Copiado!",
+    "copyBlocked": "Copia bloqueada"
+  },
+  "balance": {
+    "loading": "Cargando saldo"
+  },
+  "activity": {
+    "cachedActivity": "Actividad en caché",
+    "fromCache": "Servido desde caché IndexedDB (instantáneo / sin conexión).",
+    "backfilled": "Rellenado desde RPC.",
+    "lastSync": "Última sincronización",
+    "empty": {
+      "headline": "Sin actividad aún",
+      "description": "Tu historial de transacciones aparecerá aquí una vez que comiences a usar el protocolo. Intercambia tokens, haz staking en vaults o explora la dApp para comenzar.",
+      "exploreVaults": "Explorar Vaults",
+      "swapTokens": "Intercambiar Tokens",
+      "connectHeadline": "Conecta tu Billetera",
+      "connectDescription": "Conecta tu billetera para ver tu historial de transacciones y actividad."
+    }
+  },
+  "history": {
+    "hash": "Hash",
+    "type": "Tipo",
+    "amount": "Cantidad",
+    "title": "Historial de transacciones",
+    "transactionsSummary": "transacciones (datos de prueba) — página {{page}} de {{totalPages}}",
+    "prev": "Anterior",
+    "next": "Siguiente",
+    "page": "Página {{page}} / {{totalPages}}"
+  },
+  "assets": {
+    "title": "Activos"
+  },
+  "mempool": {
+    "pendingTransactions": "Transacciones pendientes",
+    "liveTracking": "Seguimiento en vivo del mempool",
+    "connected": "conectado",
+    "notConnected": "no conectado",
+    "noPending": "No hay transacciones pendientes.",
+    "stuck": "Atascado",
+    "stuckWarning": "transacción(es) parecen estar atascadas. Usa Acelerar o Cancelar arriba.",
+    "speedUp": "Acelerar",
+    "cancel": "Cancelar",
+    "noWallet": "No se encontró billetera inyectada. Por favor, conecta una billetera."
+  },
+  "txToasts": {
+    "pending": "Transacción pendiente…",
+    "confirmWallet": "Confirma la transacción en tu billetera.",
+    "sent": "Transacción enviada",
+    "broadcast": "Tu transacción fue transmitida a la red.",
+    "submitted": "Tu transacción fue enviada.",
+    "viewExplorer": "Ver en explorador",
+    "failed": "Transacción fallida",
+    "rejected": "La transacción fue rechazada o falló."
+  },
+  "slippage": {
+    "tolerance": "Tolerancia de deslizamiento: {{value}}%. Haz clic para ajustar.",
+    "title": "Tolerancia de Deslizamiento",
+    "description": "Tu transacción se revertirá si el precio se mueve más de esto.",
+    "quickSelect": "Selección rápida",
+    "custom": "Personalizado",
+    "setTo": "Establecer deslizamiento al {{value}}%",
+    "highWarning": "Advertencia de deslizamiento alto",
+    "highWarningDesc": "Establecer deslizamiento por encima del {{threshold}}% te pone en alto riesgo de ataques sandwich. Considera un valor más bajo.",
+    "currentTolerance": "Tolerancia actual"
+  },
+  "vaults": {
+    "balanceCenter": "Centro de Saldo de Vaults",
+    "walletNotConnected": "Billetera no conectada (Modo Simulado)",
+    "availableBalance": "Saldo Nativo Disponible",
+    "vault": "Vault",
+    "apy": "APY",
+    "tvl": "Valor Total Bloqueado",
+    "yourStake": "Tu Depósito",
+    "actions": "Acciones",
+    "asset": "Activo",
+    "enterAmount": "Ingresa la cantidad para",
+    "useMax": "Usar Máx",
+    "confirmStake": "Confirmar Depósito",
+    "confirmUnstake": "Confirmar Retiro",
+    "cancel": "Cancelar",
+    "txSucceeded": "¡Transacción exitosa y panel actualizado!",
+    "invalidAmount": "Por favor, ingresa una cantidad positiva válida.",
+    "insufficientBalance": "Saldo insuficiente. Máximo disponible: {{max}}.",
+    "txFailed": "Transacción fallida. Por favor, inténtalo de nuevo."
+  },
+  "vaultCard": {
+    "stake": "Depositar",
+    "unstake": "Retirar",
+    "stakeDetails": "Detalles de Staking de {{name}}",
+    "assetLabel": "Activo",
+    "tvl": "Valor Total Bloqueado",
+    "yourStake": "Tu Depósito",
+    "amountLabel": "Cantidad a {{action}}",
+    "useMax": "Usar Máx",
+    "processing": "Procesando…",
+    "confirmStake": "Confirmar Depósito",
+    "confirmUnstake": "Confirmar Retiro",
+    "cancel": "Cancelar",
+    "txSucceeded": "¡Transacción exitosa!",
+    "invalidAmount": "Por favor, ingresa una cantidad positiva válida.",
+    "insufficientBalance": "Saldo insuficiente. Máximo disponible: {{max}}.",
+    "txFailed": "Transacción fallida. Por favor, inténtalo de nuevo."
+  },
+  "plugins": {
+    "communityPlugins": "Plugins de la Comunidad",
+    "pluginLoaded_one": "{{count}} plugin cargado",
+    "pluginLoaded_other": "{{count}} plugins cargados",
+    "permissions": "Permisos",
+    "pluginError": "Este plugin encontró un error crítico y ha sido suspendido."
+  },
+  "sandbox": {
+    "pluginError": "Error del plugin",
+    "loadingPlugin": "Cargando plugin…",
+    "unknownError": "Ocurrió un error desconocido."
+  },
+  "pluginCard": {
+    "suspended": "Este plugin encontró un error crítico y ha sido suspendido."
+  },
+  "language": {
+    "selector": "Seleccionar idioma",
+    "en": "English",
+    "es": "Español",
+    "zh": "中文",
+    "ja": "日本語",
+    "ar": "العربية"
+  }
+}
