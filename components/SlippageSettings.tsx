@@ -171,6 +171,7 @@ export function SlippageSettings() {
       {open && (
         <div
           role="dialog"
+          aria-modal="false"
           aria-label="Slippage tolerance settings"
           className="
             absolute right-0 z-50 mt-2 w-72 origin-top-right
