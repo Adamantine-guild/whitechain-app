@@ -1,25 +1,41 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowDownUp, RefreshCw } from 'lucide-react';
 import { KNOWN_TOKENS } from '@/lib/services/RouteOptimizer';
 import { useRouteOptimizer } from '@/lib/hooks/useRouteOptimizer';
 import { SwapRouteDisplay } from './SwapRouteDisplay';
 import { notifyTxError, notifyTxSuccessLocal } from '@/components/TxToasts';
+import { swapSchema, type SwapFormValues } from '@/lib/validation/swapSchema';
 
 export function SwapCard() {
-  const [tokenInSymbol, setTokenInSymbol] = useState('USDC');
-  const [tokenOutSymbol, setTokenOutSymbol] = useState('WBTC');
-  const [amountInStr, setAmountInStr] = useState('100');
+  const [tokenInSymbol, setTokenInSymbol] = React.useState('USDC');
+  const [tokenOutSymbol, setTokenOutSymbol] = React.useState('WBTC');
 
   const tokenIn = KNOWN_TOKENS[tokenInSymbol];
   const tokenOut = KNOWN_TOKENS[tokenOutSymbol];
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors, isValid },
+  } = useForm<SwapFormValues>({
+    resolver: zodResolver(swapSchema),
+    mode: 'onChange',
+    defaultValues: { amountIn: '100', tokenIn: 'USDC', tokenOut: 'WBTC' },
+  });
+
+  const amountInStr = watch('amountIn');
+
   // Parse input amount according to decimals
-  const parseAmountIn = (): bigint => {
+  const parseAmountIn = (raw: string): bigint => {
     try {
-      if (!amountInStr || isNaN(Number(amountInStr))) return 0n;
-      const num = parseFloat(amountInStr);
+      if (!raw || isNaN(Number(raw))) return 0n;
+      const num = parseFloat(raw);
       if (num <= 0) return 0n;
       return BigInt(Math.floor(num * 10 ** (tokenIn?.decimals ?? 6)));
     } catch {
@@ -27,7 +43,7 @@ export function SwapCard() {
     }
   };
 
-  const amountInBigInt = parseAmountIn();
+  const amountInBigInt = useMemo(() => parseAmountIn(amountInStr), [amountInStr, tokenIn]);
   const { route, isCalculating } = useRouteOptimizer(
     tokenInSymbol,
     tokenOutSymbol,
@@ -45,9 +61,11 @@ export function SwapCard() {
   const handleSwapTokens = () => {
     setTokenInSymbol(tokenOutSymbol);
     setTokenOutSymbol(tokenInSymbol);
+    setValue('tokenIn', tokenOutSymbol, { shouldValidate: true });
+    setValue('tokenOut', tokenInSymbol, { shouldValidate: true });
   };
 
-  const handleExecuteSwap = () => {
+  const onSwap = handleSubmit(() => {
     if (!route) {
       notifyTxError('No valid route available for swap');
       return;
@@ -58,7 +76,7 @@ export function SwapCard() {
         route.hops.length > 1 ? 'multi-hop route' : 'direct route'
       }`
     );
-  };
+  });
 
   return (
     <div className="mx-auto max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-md dark:border-gray-800 dark:bg-gray-900 space-y-5">
@@ -72,7 +90,7 @@ export function SwapCard() {
       </div>
 
       {/* Input Token Box */}
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-2 dark:border-gray-800 dark:bg-gray-950/60">
+      <form className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-2 dark:border-gray-800 dark:bg-gray-950/60" onSubmit={onSwap}>
         <div className="flex justify-between text-xs text-gray-500">
           <span>You Pay</span>
           <span>Balance: 10,000.00</span>
@@ -80,14 +98,18 @@ export function SwapCard() {
         <div className="flex items-center gap-3">
           <input
             type="number"
-            value={amountInStr}
-            onChange={(e) => setAmountInStr(e.target.value)}
+            step="any"
+            {...register('amountIn')}
             placeholder="0.0"
+            aria-invalid={!!errors.amountIn}
             className="w-full bg-transparent text-2xl font-bold text-gray-900 focus:outline-none dark:text-gray-100"
           />
           <select
             value={tokenInSymbol}
-            onChange={(e) => setTokenInSymbol(e.target.value)}
+            onChange={(e) => {
+              setTokenInSymbol(e.target.value);
+              setValue('tokenIn', e.target.value, { shouldValidate: true });
+            }}
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
           >
             {Object.keys(KNOWN_TOKENS).map((symbol) => (
@@ -97,7 +119,13 @@ export function SwapCard() {
             ))}
           </select>
         </div>
-      </div>
+        {errors.amountIn && (
+          <p role="alert" className="text-xs text-red-600">{errors.amountIn.message}</p>
+        )}
+        {errors.tokenOut && errors.tokenOut.message && (
+          <p role="alert" className="text-xs text-red-600">{errors.tokenOut.message}</p>
+        )}
+      </form>
 
       {/* Swap Switcher Button */}
       <div className="flex justify-center -my-2">
@@ -143,9 +171,9 @@ export function SwapCard() {
 
       {/* Action Button */}
       <button
-        type="button"
-        onClick={handleExecuteSwap}
-        disabled={isCalculating || !route}
+        type="submit"
+        onClick={onSwap}
+        disabled={isCalculating || !route || !isValid}
         className="w-full rounded-xl bg-blue-600 py-3.5 text-center font-bold text-white shadow-md transition-colors hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600"
       >
         {isCalculating
