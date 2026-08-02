@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useBalance, useGasPrice, useChainId, useConfig } from 'wagmi';
 import { buildSendSchema, type SendFormValues } from '@/lib/validation/sendSchema';
-import { notifyTxError, notifyTxSuccess } from '@/components/TxToasts';
+import { notifyTxPending, notifyTxSuccess, notifyTxError, notifyTxCancelled } from '@/components/TxToasts';
+import { useModalA11y } from '@/lib/hooks/useModalA11y';
 import { useTransactionToast } from '@/lib/hooks/useTransactionToast';
 import { useTransactionReceiptWatcher } from '@/lib/hooks/useTransactionReceiptWatcher';
 import { Modal } from './Modal';
@@ -161,12 +162,26 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
       }
       onClose();
     } catch (err) {
-      const message =
-        err && typeof err === 'object' && 'message' in err
-          ? (err as { message?: string }).message
-          : 'The transaction was rejected or failed.';
-      notifyTxError(message ?? t('send.txRejected'));
-      // Wallet surfaces the real error; keep the modal open and non-blocking.
+      // EIP-1193 error code 4001 = user rejected the signing request.
+      const isUserRejection =
+        err &&
+        typeof err === 'object' &&
+        'code' in err &&
+        (err as { code: unknown }).code === 4001;
+
+      if (isUserRejection) {
+        notifyTxCancelled(toastId);
+      } else {
+        const message =
+          err && typeof err === 'object' && 'message' in err
+            ? (err as { message?: string }).message
+            : 'The transaction was rejected or failed.';
+        if (toastId != null) {
+          import('sonner').then(({ toast }) => toast.dismiss(toastId));
+        }
+        notifyTxError(message ?? t('send.txRejected'));
+      }
+      // Keep the modal open and non-blocking so the user can retry.
     }
   });
 
