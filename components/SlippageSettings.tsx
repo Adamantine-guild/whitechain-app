@@ -6,6 +6,7 @@ import { useUserSettingsStore, type SlippageValue } from '@/lib/store/userSettin
 import {
   PRESET_SLIPPAGE_VALUES,
   SLIPPAGE_WARNING_THRESHOLD,
+  SLIPPAGE_MAX,
   validateSlippageInput,
   isSlippageRisky
 } from '@/lib/store/userSettingsStore';
@@ -280,21 +281,38 @@ export function SlippageSettings() {
 
           {/* Risk warning banner */}
           {risky && (
-            <div className="mx-4 mb-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 dark:border-amber-800 dark:bg-amber-950/40">
+            <div className={`mx-4 mb-4 rounded-md border px-3 py-2 ${
+              slippage > 10
+                ? 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950/40'
+                : 'border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/40'
+            }`}>
               <div className="flex items-start gap-2">
                 <AlertTriangle
                   size={14}
                   aria-hidden="true"
-                  className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
+                  className={`mt-0.5 shrink-0 ${
+                    slippage > 10
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-amber-600 dark:text-amber-400'
+                  }`}
                 />
                 <div>
-                  <p className="text-xs font-medium text-amber-800 dark:text-amber-300">
-                    High slippage warning
+                  <p className={`text-xs font-medium ${
+                    slippage > 10
+                      ? 'text-red-800 dark:text-red-300'
+                      : 'text-amber-800 dark:text-amber-300'
+                  }`}>
+                    {slippage > 10 ? 'Extreme slippage — high risk' : 'High slippage warning'}
                   </p>
-                  <p className="mt-0.5 text-xs text-amber-700 dark:text-amber-400">
-                    Setting slippage above {SLIPPAGE_WARNING_THRESHOLD}% puts
-                    you at high risk of sandwich attacks. Consider a lower
-                    value.
+                  <p className={`mt-0.5 text-xs ${
+                    slippage > 10
+                      ? 'text-red-700 dark:text-red-400'
+                      : 'text-amber-700 dark:text-amber-400'
+                  }`}>
+                    {slippage > 10
+                      ? `Setting slippage above 10% exposes you to extreme MEV sandwich attacks and near-total loss of funds. Consider a much lower value.`
+                      : `Setting slippage above ${SLIPPAGE_WARNING_THRESHOLD}% puts you at risk of sandwich attacks and poor execution prices. Consider a lower value.`
+                    }
                   </p>
                 </div>
               </div>
