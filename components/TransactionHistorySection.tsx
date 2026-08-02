@@ -3,7 +3,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useChainId } from 'wagmi';
+import { useTranslation } from 'react-i18next';
 import { HistoryTable, type TransactionRow } from './HistoryTable';
+import { EmptyState } from './EmptyState';
 
 const TYPES = ['Send', 'Receive', 'Swap', 'Stake', 'Unstake'];
 
@@ -29,12 +31,26 @@ function parsePage(raw: string | null): number {
   return Number.isFinite(n) && n >= 1 ? n : 1;
 }
 
-export function TransactionHistorySection() {
-  const allRows = useMemo(() => buildMockRows(50_000), []);
+export function TransactionHistorySection({
+  rows: externalRows,
+}: {
+  /** Optional external rows. Falls back to mock data when omitted. */
+  rows?: TransactionRow[];
+}) {
+  const { t } = useTranslation();
+  const allRows = useMemo(() => externalRows ?? buildMockRows(50_000), [externalRows]);
   const chainId = useChainId();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  if (allRows.length === 0) {
+    return (
+      <section id="history" className="card lg:col-span-2" data-testid="history-empty">
+        <EmptyState />
+      </section>
+    );
+  }
 
   const totalPages = Math.max(1, Math.ceil(allRows.length / PAGE_SIZE));
   const page = Math.min(parsePage(searchParams.get('page')), totalPages);
@@ -61,9 +77,9 @@ export function TransactionHistorySection() {
 
   return (
     <section id="history" className="card lg:col-span-2">
-      <h2 className="text-sm font-semibold text-gray-900">Transaction history</h2>
+      <h2 className="text-sm font-semibold text-gray-900">{t('history.title')}</h2>
       <p className="mt-1 text-xs text-gray-500">
-        {allRows.length.toLocaleString()} transactions (mock data) — page {page} of {totalPages}
+        {allRows.length.toLocaleString()} {t('history.transactionsSummary', { page, totalPages })}
       </p>
       <div className="mt-3">
         <HistoryTable rows={pageRows} chainId={chainId} />
@@ -75,10 +91,10 @@ export function TransactionHistorySection() {
           disabled={page <= 1}
           className="btn-outline disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Prev
+          {t('history.prev')}
         </button>
         <span className="text-xs text-gray-500">
-          Page {page} / {totalPages}
+          {t('history.page', { page, totalPages })}
         </span>
         <button
           type="button"
@@ -86,7 +102,7 @@ export function TransactionHistorySection() {
           disabled={page >= totalPages}
           className="btn-outline disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Next
+          {t('history.next')}
         </button>
       </div>
     </section>

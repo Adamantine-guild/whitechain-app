@@ -2,34 +2,55 @@
 
 import React, { useEffect, useState } from 'react';
 import { Moon, Sun } from 'lucide-react';
-import { THEME_STORAGE_KEY, applyTheme, getPreferredTheme, type Theme } from '@/lib/theme';
+import { applyTheme, getPreferredTheme, type Theme } from '@/lib/theme';
+import { getUserSettingsStore } from '@/lib/store/userSettingsStore';
 
 /**
- * System-aware dark mode toggle (#2). The initial class is already applied
- * by the inline `NO_FLASH_THEME_SCRIPT` in `app/layout.tsx` before React
- * hydrates; this component reconciles its own state to match on mount so it
- * never has to guess (and never flashes) on the client.
+ * System-aware dark mode toggle.
+ *
+ * Initial class is applied by the inline `NO_FLASH_THEME_SCRIPT` in
+ * `app/layout.tsx` before React hydrates. On mount we reconcile state with
+ * the authoritative UserSettingsStore (IndexedDB) and fall back to the
+ * synchronous localStorage bootstrap value if IDB hasn't loaded yet.
+ *
+ * All writes go to the UserSettingsStore (IDB), never directly to
+ * localStorage. The localStorage key is migrated and removed on first access.
  */
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('light');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const initial = getPreferredTheme();
-    setTheme(initial);
-    // Reconciles the DOM class with our reported state even if the inline
-    // no-flash script (app/layout.tsx) didn't run for some reason.
-    applyTheme(initial);
+    // Apply the synchronous bootstrap value immediately to avoid a flash,
+    // then asynchronously load from IDB and reconcile.
+    const syncTheme = getPreferredTheme();
+    setTheme(syncTheme);
+    applyTheme(syncTheme);
     setMounted(true);
+
+    // Async reconcile: IDB is the authoritative source after migration.
+    getUserSettingsStore()
+      .getTheme()
+      .then((stored) => {
+        if (stored) {
+          setTheme(stored);
+          applyTheme(stored);
+        }
+      })
+      .catch(() => {
+        // Non-fatal: keep the sync bootstrap value.
+      });
   }, []);
 
-  // Follow the OS preference live, but only while the user hasn't made an
-  // explicit choice of their own.
+  // Follow the OS preference live while the user hasn't made an explicit
+  // choice (i.e. IDB has no stored theme).
   useEffect(() => {
     if (!mounted) return;
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = (e: MediaQueryListEvent) => {
-      if (window.localStorage.getItem(THEME_STORAGE_KEY)) return;
+    const onChange = async (e: MediaQueryListEvent) => {
+      // Only follow OS if the user hasn't saved a preference in IDB.
+      const stored = await getUserSettingsStore().getTheme().catch(() => undefined);
+      if (stored) return;
       const next: Theme = e.matches ? 'dark' : 'light';
       setTheme(next);
       applyTheme(next);
@@ -38,11 +59,12 @@ export function ThemeToggle() {
     return () => mediaQuery.removeEventListener('change', onChange);
   }, [mounted]);
 
-  function toggle() {
+  async function toggle() {
     const next: Theme = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
     applyTheme(next);
-    window.localStorage.setItem(THEME_STORAGE_KEY, next);
+    // Persist to IDB (migration runs inside setTheme if not done yet).
+    await getUserSettingsStore().setTheme(next);
   }
 
   if (!mounted) {

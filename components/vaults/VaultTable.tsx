@@ -1,31 +1,54 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { VaultCardMobile, type VaultData } from './VaultCardMobile';
 import { Lock, Unlock, RefreshCw, Check, TrendingUp } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
+import { useTranslation } from 'react-i18next';
+import { useProtocolStats } from '@/lib/hooks/queries/useProtocolStats';
 
 export function VaultTable() {
+  const { t } = useTranslation();
   const { address, isConnected } = useAccount();
   const { data: balanceData } = useBalance({ address });
 
-  // Mock vaults state
-  const [vaults, setVaults] = useState<VaultData[]>([
-    { id: 'usdc', name: 'USDC Staking Vault', asset: 'USDC', apy: 4.5, tvl: '$12,500,000', userStake: 0.0 },
-    { id: 'eth', name: 'Ethereum Yield Vault', asset: 'ETH', apy: 3.2, tvl: '4,820 ETH', userStake: 0.0 },
-    { id: 'wbtc', name: 'WBTC Core Vault', asset: 'WBTC', apy: 2.1, tvl: '320 WBTC', userStake: 0.0 }
-  ]);
+  const { data: protocolStats, isLoading, isError, error } = useProtocolStats();
 
-  // Simulated native balance that the user can stake/unstake from
+  const [userStakes, setUserStakes] = useState<Record<string, number>>({});
   const [simulatedBalance, setSimulatedBalance] = useState(10.0);
 
-  // Sync with localStorage on load
+  const vaults: VaultData[] = useMemo(() => {
+    const source = protocolStats?.vaults ?? [];
+    if (source.length === 0) {
+      return [
+        { id: 'usdc', name: 'USDC Staking Vault', asset: 'USDC', apy: 4.5, tvl: '$12,500,000', userStake: 0.0 },
+        { id: 'eth', name: 'Ethereum Yield Vault', asset: 'ETH', apy: 3.2, tvl: '4,820 ETH', userStake: 0.0 },
+        { id: 'wbtc', name: 'WBTC Core Vault', asset: 'WBTC', apy: 2.1, tvl: '320 WBTC', userStake: 0.0 },
+      ];
+    }
+    return source.map((v) => ({
+      id: v.id,
+      name: v.name,
+      asset: v.asset,
+      apy: v.apy,
+      tvl: v.tvlFormatted,
+      userStake: userStakes[v.id] ?? 0,
+    }));
+  }, [protocolStats, userStakes]);
+
+  // Sync userStakes from localStorage on load
   useEffect(() => {
     const saved = localStorage.getItem('whitechain-vaults-state');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.vaults) setVaults(parsed.vaults);
+        if (parsed.vaults) {
+          const stakes: Record<string, number> = {};
+          for (const v of parsed.vaults) {
+            stakes[v.id] = v.userStake ?? 0;
+          }
+          setUserStakes(stakes);
+        }
         if (typeof parsed.simulatedBalance === 'number') setSimulatedBalance(parsed.simulatedBalance);
       } catch (e) {
         // ignore
@@ -41,10 +64,14 @@ export function VaultTable() {
   }, [balanceData]);
 
   // Helper to persist state
-  const saveState = (updatedVaults: VaultData[], updatedBalance: number) => {
+  const saveState = (updatedStakes: Record<string, number>, updatedBalance: number) => {
+    const vaultList = (protocolStats?.vaults ?? []).map((v) => ({
+      id: v.id,
+      userStake: updatedStakes[v.id] ?? 0,
+    }));
     localStorage.setItem(
       'whitechain-vaults-state',
-      JSON.stringify({ vaults: updatedVaults, simulatedBalance: updatedBalance })
+      JSON.stringify({ vaults: vaultList, simulatedBalance: updatedBalance })
     );
   };
 
@@ -52,16 +79,11 @@ export function VaultTable() {
   const handleStake = async (vaultId: string, amount: number): Promise<void> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const updatedVaults = vaults.map((v) => {
-          if (v.id === vaultId) {
-            return { ...v, userStake: v.userStake + amount };
-          }
-          return v;
-        });
+        const updatedStakes = { ...userStakes, [vaultId]: (userStakes[vaultId] ?? 0) + amount };
         const updatedBalance = simulatedBalance - amount;
-        setVaults(updatedVaults);
+        setUserStakes(updatedStakes);
         setSimulatedBalance(updatedBalance);
-        saveState(updatedVaults, updatedBalance);
+        saveState(updatedStakes, updatedBalance);
         resolve();
       }, 1500);
     });
@@ -70,16 +92,12 @@ export function VaultTable() {
   const handleUnstake = async (vaultId: string, amount: number): Promise<void> => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const updatedVaults = vaults.map((v) => {
-          if (v.id === vaultId) {
-            return { ...v, userStake: Math.max(0, v.userStake - amount) };
-          }
-          return v;
-        });
+        const current = userStakes[vaultId] ?? 0;
+        const updatedStakes = { ...userStakes, [vaultId]: Math.max(0, current - amount) };
         const updatedBalance = simulatedBalance + amount;
-        setVaults(updatedVaults);
+        setUserStakes(updatedStakes);
         setSimulatedBalance(updatedBalance);
-        saveState(updatedVaults, updatedBalance);
+        saveState(updatedStakes, updatedBalance);
         resolve();
       }, 1500);
     });
@@ -114,12 +132,12 @@ export function VaultTable() {
 
     const val = parseFloat(desktopAmount);
     if (isNaN(val) || val <= 0) {
-      setErrorMsg('Please enter a valid positive amount.');
+      setErrorMsg(t('vaults.invalidAmount'));
       return;
     }
 
     if (val > maxAvailable) {
-      setErrorMsg(`Insufficient balance. Max available is ${maxAvailable.toFixed(4)}.`);
+      setErrorMsg(t('vaults.insufficientBalance', { max: maxAvailable.toFixed(4) }));
       return;
     }
 
@@ -135,7 +153,7 @@ export function VaultTable() {
       setExpandedRow(null);
       setTimeout(() => setSuccessMsg(false), 3000);
     } catch (err: unknown) {
-      setErrorMsg('Transaction failed. Please try again.');
+      setErrorMsg(t('vaults.txFailed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -146,13 +164,13 @@ export function VaultTable() {
       {/* Wallet / Balance Info Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gray-50 dark:bg-gray-800/40 p-4 rounded-md border border-gray-100 dark:border-gray-800">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Vault Balance Center</h3>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">{t('vaults.balanceCenter')}</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-            {isConnected ? `Wallet: ${address?.slice(0, 6)}...${address?.slice(-4)}` : 'Wallet not connected (Simulated Mode)'}
+            {isConnected ? `Wallet: ${address?.slice(0, 6)}...${address?.slice(-4)}` : t('vaults.walletNotConnected')}
           </p>
         </div>
         <div className="flex flex-col items-start sm:items-end">
-          <span className="text-xs text-gray-500 dark:text-gray-400">Available Native Balance</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">{t('vaults.availableBalance')}</span>
           <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
             {simulatedBalance.toFixed(4)} {balanceData?.symbol || 'ETH'}
           </span>
@@ -163,7 +181,7 @@ export function VaultTable() {
       {successMsg && (
         <div className="hidden md:flex items-center gap-2 rounded bg-green-50 p-3 text-xs text-green-700 dark:bg-green-950/20 dark:text-green-400" role="status">
           <Check className="h-4 w-4 shrink-0" />
-          <span>Transaction succeeded and dashboard updated!</span>
+          <span>{t('vaults.txSucceeded')}</span>
         </div>
       )}
 
@@ -185,11 +203,11 @@ export function VaultTable() {
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-800 text-left text-sm">
           <thead className="bg-gray-50 dark:bg-gray-800/60 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">Vault</th>
-              <th scope="col" className="px-6 py-3">APY</th>
-              <th scope="col" className="px-6 py-3">Total Value Locked</th>
-              <th scope="col" className="px-6 py-3">Your Stake</th>
-              <th scope="col" className="px-6 py-3 text-right">Actions</th>
+              <th scope="col" className="px-6 py-3">{t('vaults.vault')}</th>
+              <th scope="col" className="px-6 py-3">{t('vaults.apy')}</th>
+              <th scope="col" className="px-6 py-3">{t('vaults.tvl')}</th>
+              <th scope="col" className="px-6 py-3">{t('vaults.yourStake')}</th>
+              <th scope="col" className="px-6 py-3 text-right">{t('vaults.actions')}</th>
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
@@ -201,7 +219,7 @@ export function VaultTable() {
                     <td className="px-6 py-4 font-semibold text-gray-900 dark:text-gray-100">
                       {vault.name}
                       <span className="block text-xs font-normal text-gray-400 dark:text-gray-500 mt-0.5">
-                        Asset: {vault.asset}
+                        {t('vaults.asset')}: {vault.asset}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-semibold">
@@ -225,7 +243,7 @@ export function VaultTable() {
                           aria-expanded={isRowExpanded && expandedRow.type === 'stake'}
                         >
                           <Lock className="h-3.5 w-3.5" />
-                          <span>Stake</span>
+                          <span>{t('common.stake')}</span>
                         </button>
                         <button
                           type="button"
@@ -235,7 +253,7 @@ export function VaultTable() {
                           aria-expanded={isRowExpanded && expandedRow.type === 'unstake'}
                         >
                           <Unlock className="h-3.5 w-3.5" />
-                          <span>Unstake</span>
+                          <span>{t('common.unstake')}</span>
                         </button>
                       </div>
                     </td>
@@ -247,13 +265,13 @@ export function VaultTable() {
                       <td colSpan={5} className="px-6 py-4">
                         <form onSubmit={handleDesktopSubmit} className="max-w-md ml-auto flex flex-col gap-3">
                           <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
-                            <span className="capitalize font-medium">Enter amount to {expandedRow.type}:</span>
+                            <span className="capitalize font-medium">{t('vaults.enterAmount')} {t(expandedRow.type === 'stake' ? 'common.stake' : 'common.unstake')}:</span>
                             <button
                               type="button"
                               onClick={() => setDesktopAmount(maxAvailable.toString())}
                               className="font-semibold text-blue-600 hover:underline dark:text-blue-400"
                             >
-                              Use Max ({maxAvailable.toFixed(4)} {expandedRow.type === 'stake' ? (balanceData?.symbol || 'ETH') : vault.asset})
+                              {t('vaults.useMax')} ({maxAvailable.toFixed(4)} {expandedRow.type === 'stake' ? (balanceData?.symbol || 'ETH') : vault.asset})
                             </button>
                           </div>
                           <div className="flex gap-2">
@@ -280,7 +298,7 @@ export function VaultTable() {
                               {isSubmitting ? (
                                 <RefreshCw className="h-3.5 w-3.5 animate-spin" />
                               ) : (
-                                <span>Confirm {expandedRow.type === 'stake' ? 'Stake' : 'Unstake'}</span>
+                                <span>{expandedRow.type === 'stake' ? t('vaults.confirmStake') : t('vaults.confirmUnstake')}</span>
                               )}
                             </button>
                             <button
@@ -289,7 +307,7 @@ export function VaultTable() {
                               onClick={() => setExpandedRow(null)}
                               className="btn-outline h-12 px-3 text-xs"
                             >
-                              Cancel
+                              {t('vaults.cancel')}
                             </button>
                           </div>
                           {errorMsg && (

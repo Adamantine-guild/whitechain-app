@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Settings2, AlertTriangle, Gauge } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useUserSettingsStore, type SlippageValue } from '@/lib/store/userSettingsStore';
 import {
   PRESET_SLIPPAGE_VALUES,
@@ -30,6 +31,7 @@ import {
  * ```
  */
 export function SlippageSettings() {
+  const { t } = useTranslation();
   const slippage = useUserSettingsStore((s) => s.slippage);
   const setSlippage = useUserSettingsStore((s) => s.setSlippage);
 
@@ -147,7 +149,7 @@ export function SlippageSettings() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-label={`Slippage tolerance: ${slippage} %. Click to adjust.`}
+        aria-label={t('slippage.tolerance', { value: slippage })}
         className={`
           btn-outline relative flex items-center gap-1.5 px-3 py-2 text-xs
           transition-all duration-150
@@ -170,6 +172,7 @@ export function SlippageSettings() {
       {open && (
         <div
           role="dialog"
+          aria-modal="false"
           aria-label="Slippage tolerance settings"
           className="
             absolute right-0 z-50 mt-2 w-72 origin-top-right
@@ -183,18 +186,18 @@ export function SlippageSettings() {
             <div className="flex items-center gap-2">
               <Gauge size={15} aria-hidden="true" className="text-gray-500 dark:text-gray-400" />
               <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                Slippage Tolerance
+                {t('slippage.title')}
               </span>
             </div>
             <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-              Your transaction will revert if the price moves by more than this.
+              {t('slippage.description')}
             </p>
           </div>
 
           {/* Preset buttons */}
           <div className="px-4 pt-3">
             <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-              Quick select
+              {t('slippage.quickSelect')}
             </span>
             <div className="mt-1.5 grid grid-cols-3 gap-2">
               {PRESET_SLIPPAGE_VALUES.map((value) => {
@@ -217,7 +220,7 @@ export function SlippageSettings() {
                       ${focusedPreset === value && !selected ? 'ring-1 ring-gray-300 dark:ring-gray-600' : ''}
                     `}
                     aria-pressed={selected}
-                    aria-label={`Set slippage to ${value} %`}
+                    aria-label={t('slippage.setTo', { value })}
                   >
                     {value}%
                   </button>
@@ -232,7 +235,7 @@ export function SlippageSettings() {
               htmlFor="slippage-custom"
               className="text-xs font-medium text-gray-600 dark:text-gray-400"
             >
-              Custom
+              {t('slippage.custom')}
             </label>
             <div className="relative mt-1.5">
               <input
@@ -297,12 +300,12 @@ export function SlippageSettings() {
                   }`}
                 />
                 <div>
-                  <p className={`text-xs font-medium ${
+<p className={`text-xs font-medium ${
                     slippage > 10
                       ? 'text-red-800 dark:text-red-300'
                       : 'text-amber-800 dark:text-amber-300'
                   }`}>
-                    {slippage > 10 ? 'Extreme slippage — high risk' : 'High slippage warning'}
+                    {slippage > 10 ? t('slippage.extremeWarning') : t('slippage.highWarning')}
                   </p>
                   <p className={`mt-0.5 text-xs ${
                     slippage > 10
@@ -310,8 +313,8 @@ export function SlippageSettings() {
                       : 'text-amber-700 dark:text-amber-400'
                   }`}>
                     {slippage > 10
-                      ? `Setting slippage above 10% exposes you to extreme MEV sandwich attacks and near-total loss of funds. Consider a much lower value.`
-                      : `Setting slippage above ${SLIPPAGE_WARNING_THRESHOLD}% puts you at risk of sandwich attacks and poor execution prices. Consider a lower value.`
+                      ? t('slippage.extremeWarningDesc')
+                      : t('slippage.highWarningDesc', { threshold: SLIPPAGE_WARNING_THRESHOLD })
                     }
                   </p>
                 </div>
@@ -322,7 +325,7 @@ export function SlippageSettings() {
           {/* Current value summary */}
           <div className="border-t border-gray-100 px-4 py-2.5 dark:border-gray-800">
             <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-              <span>Current tolerance</span>
+              <span>{t('slippage.currentTolerance')}</span>
               <span
                 className={`font-semibold ${
                   risky
