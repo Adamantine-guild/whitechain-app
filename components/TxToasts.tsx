@@ -96,4 +96,47 @@ export function notifyTxPending(): string | number {
   });
 }
 
+/**
+ * Update a pending toast to a success or error state.
+ *
+ * Used by `useTransactionToast` and any component that wants to manually
+ * manage the pending → settled lifecycle of a single toast.
+ *
+ * @param toastId - The id returned by `notifyTxPending()`.
+ * @param state   - 'confirmed' (green, auto-dismiss 5s) or 'reverted' (red, persistent).
+ * @param opts    - Optional chain (for explorer link) and explorer URL override.
+ */
+export function notifyTxUpdate(
+  toastId: string | number,
+  state: 'confirmed' | 'reverted',
+  opts: { chain?: Chain; explorerUrl?: string } = {}
+) {
+  if (state === 'confirmed') {
+    const url = opts.explorerUrl ?? (opts.chain ? explorerTxUrl(opts.chain, '' as Hash) : null);
+    toast.success(t('txToasts.confirmed', 'Transaction confirmed'), {
+      id: toastId,
+      description: url
+        ? t('txToasts.broadcast', 'Your transaction was broadcast to the network.')
+        : t('txToasts.submitted', 'Your transaction was submitted.'),
+      duration: 5000,
+      action:
+        url
+          ? {
+              label: t('txToasts.viewExplorer', 'View on explorer'),
+              onClick: () => window.open(url, '_blank', 'noopener,noreferrer'),
+            }
+          : undefined,
+    });
+  } else {
+    toast.error(t('txToasts.reverted', 'Transaction reverted'), {
+      id: toastId,
+      description: t(
+        'txToasts.revertedDesc',
+        'The transaction was reverted on-chain. Please try again.'
+      ),
+      duration: Infinity,
+    });
+  }
+}
+
 export { toast };

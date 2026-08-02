@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAccount, useBalance, useGasPrice, useChainId, useConfig } from 'wagmi';
 import { buildSendSchema, type SendFormValues } from '@/lib/validation/sendSchema';
-import { notifyTxPending, notifyTxSuccess, notifyTxError } from '@/components/TxToasts';
+import { notifyTxError, notifyTxSuccess } from '@/components/TxToasts';
+import { useTransactionToast } from '@/lib/hooks/useTransactionToast';
 import { useModalA11y } from '@/lib/hooks/useModalA11y';
 import { useTransactionReceiptWatcher } from '@/lib/hooks/useTransactionReceiptWatcher';
 import type { Hash } from 'viem';
@@ -35,6 +36,7 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
   const { data: gasPrice } = useGasPrice({ query: { refetchInterval: 15_000 } });
   const chainId = useChainId();
   const wagmiConfigChain = useConfig().chains.find((c) => c.id === chainId);
+  const { trackTransaction } = useTransactionToast();
 
   // Track the last submitted transaction for optimistic UI updates.
   // Reset when the modal closes.
@@ -142,19 +144,21 @@ export function SendModal({ isOpen, onClose }: SendModalProps) {
         ]
       })) as string | undefined;
 
-      if (toastId) {
-        // Replace the pending loader with the resolved success toast.
-        import('sonner').then(({ toast }) => toast.dismiss(toastId));
-      }
-
       if (txHash && txHash !== '0x0') {
-        notifyTxSuccess(txHash as `0x${string}`, wagmiConfigChain);
+        // Dismiss the signing-pending toast — the centralized hook takes over.
+        if (toastId) {
+          import('sonner').then(({ toast }) => toast.dismiss(toastId));
+        }
+        trackTransaction(txHash as Hash);
         // Record the optimistic deduction so the UI updates immediately.
         setLastTxHash(txHash as Hash);
         setLastTxAmount(BigInt(values.amount));
       } else {
         // Some wallets resolve without a hash (e.g. hardware approvals); still
         // surface a neutral success so the user isn't left without feedback.
+        if (toastId) {
+          import('sonner').then(({ toast }) => toast.dismiss(toastId));
+        }
         notifyTxSuccess('0x0' as `0x${string}`, wagmiConfigChain);
       }
       onClose();
