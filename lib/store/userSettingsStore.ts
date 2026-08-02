@@ -65,7 +65,7 @@ export const DEFAULT_SLIPPAGE: SlippageValue = 0.5;
 export const PRESET_SLIPPAGE_VALUES: SlippageValue[] = [0.1, 0.5, 1.0];
 
 /** Anything above this is considered risky (sandwich-attack territory). */
-export const SLIPPAGE_WARNING_THRESHOLD = 5;
+export const SLIPPAGE_WARNING_THRESHOLD = 2;
 
 /** Hard upper bound — values above this are rejected by validation. */
 export const SLIPPAGE_MAX = 50;
