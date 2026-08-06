@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { getExplorerLink } from '@/lib/explorer';
 import { useTranslation } from 'react-i18next';
+import { Skeleton } from '@/components/Skeleton';
 
 export interface TransactionRow {
   hash: string;
@@ -12,7 +13,16 @@ export interface TransactionRow {
   note?: string;
 }
 
-export function HistoryTable({ rows, chainId }: { rows: TransactionRow[]; chainId: number }) {
+export function HistoryTable({
+  rows,
+  chainId,
+  isLoading = false,
+}: {
+  rows: TransactionRow[];
+  chainId: number;
+  /** When true, renders shimmering skeleton rows instead of data. */
+  isLoading?: boolean;
+}) {
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +42,22 @@ export function HistoryTable({ rows, chainId }: { rows: TransactionRow[]; chainI
         <span>{t('history.type')}</span>
         <span className="text-right">{t('history.amount')}</span>
       </div>
+      {isLoading ? (
+        <div role="status" aria-busy="true" aria-label="Loading transactions" data-testid="history-skeleton">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-[1fr_120px_140px] items-center gap-2 border-b border-gray-100 px-4 py-4"
+              aria-hidden="true"
+              data-testid="history-skeleton-row"
+            >
+              <Skeleton width="70%" height="0.875rem" />
+              <Skeleton width="70px" height="0.875rem" />
+              <Skeleton width="90px" height="0.875rem" className="justify-self-end" />
+            </div>
+          ))}
+        </div>
+      ) : (
       <div style={{ height: virtualizer.getTotalSize(), position: 'relative' }}>
         {items.map((virtualRow) => {
           const row = rows[virtualRow.index];
@@ -65,6 +91,7 @@ export function HistoryTable({ rows, chainId }: { rows: TransactionRow[]; chainI
           );
         })}
       </div>
+      )}
     </div>
   );
 }

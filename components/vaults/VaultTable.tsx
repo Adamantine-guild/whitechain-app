@@ -6,6 +6,7 @@ import { Lock, Unlock, RefreshCw, Check, TrendingUp } from 'lucide-react';
 import { useAccount, useBalance } from 'wagmi';
 import { useTranslation } from 'react-i18next';
 import { useProtocolStats } from '@/lib/hooks/queries/useProtocolStats';
+import { Skeleton } from '@/components/Skeleton';
 
 export function VaultTable() {
   const { t } = useTranslation();
@@ -187,15 +188,37 @@ export function VaultTable() {
 
       {/* MOBILE BREAKPOINT VIEW: CARDS (md:hidden) */}
       <div className="grid grid-cols-1 gap-4 md:hidden" id="vaults-mobile-cards">
-        {vaults.map((vault) => (
-          <VaultCardMobile
-            key={vault.id}
-            vault={vault}
-            nativeBalance={simulatedBalance}
-            onStake={handleStake}
-            onUnstake={handleUnstake}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={`skeleton-mobile-${i}`}
+                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900"
+                aria-hidden="true"
+                data-testid="vault-skeleton-card"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <Skeleton width="140px" height="1rem" />
+                  <Skeleton width="60px" height="1.25rem" radius="rounded-full" />
+                </div>
+                <div className="space-y-2 mb-4">
+                  <Skeleton width="100%" height="0.75rem" />
+                  <Skeleton width="80%" height="0.75rem" />
+                </div>
+                <div className="flex gap-2">
+                  <Skeleton width="50%" height="2.25rem" radius="rounded-lg" />
+                  <Skeleton width="50%" height="2.25rem" radius="rounded-lg" />
+                </div>
+              </div>
+            ))
+          : vaults.map((vault) => (
+              <VaultCardMobile
+                key={vault.id}
+                vault={vault}
+                nativeBalance={simulatedBalance}
+                onStake={handleStake}
+                onUnstake={handleUnstake}
+              />
+            ))}
       </div>
 
       {/* DESKTOP BREAKPOINT VIEW: TRADITIONAL TABLE (hidden md:block) */}
@@ -211,7 +234,22 @@ export function VaultTable() {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
-            {vaults.map((vault) => {
+            {isLoading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <tr key={`skeleton-desktop-${i}`} aria-hidden="true" data-testid="vault-skeleton-row">
+                    <td className="px-6 py-4"><Skeleton width="120px" height="1rem" /></td>
+                    <td className="px-6 py-4"><Skeleton width="60px" height="1rem" /></td>
+                    <td className="px-6 py-4"><Skeleton width="80px" height="1rem" /></td>
+                    <td className="px-6 py-4"><Skeleton width="100px" height="1rem" /></td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <Skeleton width="80px" height="2.25rem" radius="rounded-lg" />
+                        <Skeleton width="80px" height="2.25rem" radius="rounded-lg" />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              : vaults.map((vault) => {
               const isRowExpanded = expandedRow?.id === vault.id;
               return (
                 <React.Fragment key={vault.id}>
