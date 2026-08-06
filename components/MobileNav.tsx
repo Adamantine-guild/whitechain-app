@@ -34,6 +34,11 @@ export default function MobileNav({
   return (
     <div
       id="mobile-navigation"
+      role="dialog"
+      aria-modal={isMobileMenuOpen}
+      aria-label={t('nav.mobileNav')}
+      aria-hidden={!isMobileMenuOpen}
+      inert={!isMobileMenuOpen ? '' : undefined}
       className={`fixed left-0 top-0 z-50 h-screen w-full overflow-y-auto bg-white transition-all duration-300 ease-in-out dark:bg-gray-950 md:hidden ${
         isMobileMenuOpen
           ? "translate-y-0 opacity-100"

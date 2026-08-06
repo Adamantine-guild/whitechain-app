@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Menu, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { WalletModal } from './WalletModal';
@@ -32,6 +32,23 @@ export function Navbar() {
   const isMounted = useIsMounted();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const hamburgerRef = useRef<HTMLButtonElement>(null);
+
+  // Focus management for the mobile navigation dialog (WCAG 2.4.3 Focus Order):
+  // move focus into the menu when it opens and return it to the trigger on close.
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      const dialog = document.getElementById('mobile-navigation');
+      if (dialog) {
+        const focusable = dialog.querySelector<HTMLElement>(
+          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        focusable?.focus();
+      }
+    } else {
+      hamburgerRef.current?.focus();
+    }
+  }, [isMobileMenuOpen]);
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
@@ -77,6 +94,7 @@ export function Navbar() {
         {/* Mobile Hamburger */}
         <button
           type="button"
+          ref={hamburgerRef}
           onClick={() => setIsMobileMenuOpen((prev) => !prev)}
           aria-label={
             isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')

@@ -110,6 +110,7 @@ export function SwapCard() {
               setTokenInSymbol(e.target.value);
               setValue('tokenIn', e.target.value, { shouldValidate: true });
             }}
+            aria-label="Input token"
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
           >
             {Object.keys(KNOWN_TOKENS).map((symbol) => (
@@ -155,6 +156,7 @@ export function SwapCard() {
           <select
             value={tokenOutSymbol}
             onChange={(e) => setTokenOutSymbol(e.target.value)}
+            aria-label="Output token"
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
           >
             {Object.keys(KNOWN_TOKENS).map((symbol) => (

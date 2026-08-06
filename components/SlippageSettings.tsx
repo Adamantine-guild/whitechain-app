@@ -77,6 +77,26 @@ export function SlippageSettings() {
     }
   }, [open, isCustom]);
 
+  // Move focus into the popover when it opens (WCAG 2.4.3 Focus Order) and
+  // return it to the trigger button on close.
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) {
+      triggerRef.current?.focus();
+      return;
+    }
+    // Prefer the custom input when a custom value is active, otherwise the
+    // first preset button.
+    if (isCustom) {
+      inputRef.current?.focus();
+    } else {
+      const firstPreset = popoverRef.current?.querySelector<HTMLElement>(
+        'button[data-preset]:not([disabled])'
+      );
+      firstPreset?.focus();
+    }
+  }, [open, isCustom]);
+
   // Sync the custom raw input when slippage changes externally or on re-open.
   useEffect(() => {
     if (isCustom) {
@@ -146,6 +166,7 @@ export function SlippageSettings() {
       {/* Trigger button — shows current slippage + warning dot when risky */}
       <button
         type="button"
+        ref={triggerRef}
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -206,6 +227,7 @@ export function SlippageSettings() {
                   <button
                     key={value}
                     type="button"
+                    data-preset={value}
                     onClick={() => handlePresetClick(value)}
                     onMouseEnter={() => setFocusedPreset(value)}
                     onMouseLeave={() => setFocusedPreset(null)}

@@ -22,6 +22,23 @@ html, body, :root {
   @apply inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:hover:bg-gray-800;
 }
 
+/* ─── Focus-visible (WCAG 2.4.7 Focus Visible) ────────────────────────── */
+
+/*
+ * Ensure every interactive element has a visible focus ring when
+ * focused via keyboard.  The default browser outline is replaced by
+ * a subtle ring that works in both light and dark mode.
+ */
+:focus-visible {
+  outline: 2px solid theme('colors.gray.500');
+  outline-offset: 2px;
+}
+
+/* Remove the focus ring for mouse/finger clicks (keeps the UI clean). */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* ─── RTL (Right-to-Left) support ────────────────────────────────────── */
 
 /*
