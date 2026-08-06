@@ -16,6 +16,7 @@ import { ProfileDropdown } from './ProfileDropdown';
 import { SlippageSettings } from './SlippageSettings';
 import { Avatar } from './Avatar';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { CurrencySelector } from './CurrencySelector';
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -49,6 +50,7 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <SlippageSettings />
           <LanguageSwitcher />
+          <CurrencySelector />
           <ThemeToggle />
           {isConnected && address ? (
             <>

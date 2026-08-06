@@ -1,18 +1,19 @@
 'use client';
 
-import { formatCurrency } from '@/src/utils/format';
 import { useProtocolStats } from '@/lib/hooks/queries/useProtocolStats';
 import { useRealtimeTVL } from '@/lib/hooks/useRealtimeTVL';
+import { useFiatCurrency } from '@/lib/hooks/useFiatCurrency';
 import { TrendingUp, Users, DollarSign, Layers, Wifi, WifiOff } from 'lucide-react';
 
 export function ProtocolStatsBar() {
   const { data: stats, isLoading } = useProtocolStats();
   const { connected: tvlConnected } = useRealtimeTVL();
+  const { format } = useFiatCurrency();
 
   const items = [
     {
       label: 'Total Value Locked',
-      value: stats ? formatCurrency(stats.totalTvl) : '—',
+      value: stats ? format(stats.totalTvl) : '—',
       sub: stats ? `${stats.totalTvlChange24h >= 0 ? '+' : ''}${stats.totalTvlChange24h.toFixed(1)}% (24h)` : null,
       icon: DollarSign,
       color: 'text-emerald-600 dark:text-emerald-400',
