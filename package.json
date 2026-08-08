@@ -11,18 +11,21 @@
     "size": "node scripts/check-bundle-budget.mjs",
     "test:bundle": "node --test scripts/check-bundle-budget.test.mjs",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:synpress": "playwright test --project=chromium --grep 'Synpress'",
+    "synpress:cache": "synpress e2e/wallet-setup --headless"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
     "@ledgerhq/hw-app-eth": "^6.47.1",
     "@ledgerhq/hw-transport-webusb": "^6.35.0",
+    "@synthetixio/synpress-cache": "^0.0.14",
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-virtual": "^3.14.8",
     "@web3modal/ethers": "^5.1.11",
     "clsx": "2.1.1",
     "dexie": "^4.4.4",
-"ethers": "^6.17.0",
+    "ethers": "^6.17.0",
     "i18next": "^26.3.6",
     "i18next-browser-languagedetector": "^8.2.1",
     "lucide-react": "^1.27.0",
@@ -40,6 +43,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.62.0",
+    "@synthetixio/synpress": "^4.1.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.1.0",
