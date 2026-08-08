@@ -184,5 +184,8 @@
     "zh": "中文",
     "ja": "日本語",
     "ar": "العربية"
+  },
+  "currency": {
+    "selector": "Select display currency"
   }
 }
