@@ -48,42 +48,59 @@ export function useModalA11y(isOpen: boolean, onClose: () => void, containerRef:
   // Focus trap
   useEffect(() => {
     if (!isOpen || !containerRef.current) return;
-    
+
+    const container = containerRef.current;
+
+    const getFocusable = () =>
+      Array.from(
+        container.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter(
+        (el) =>
+          !el.hasAttribute('disabled') &&
+          el.tabIndex !== -1 &&
+          el.offsetWidth > 0 &&
+          el.offsetHeight > 0
+      );
+
     const handleTab = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
-      
-      const focusableElements = containerRef.current!.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      
-      // Filter out disabled elements and those with display: none or visibility: hidden
-      const focusable = Array.from(focusableElements).filter(el => 
-        !el.hasAttribute('disabled') && 
-        el.tabIndex !== -1 &&
-        el.offsetWidth > 0 &&
-        el.offsetHeight > 0
-      );
-      
-      if (!focusable.length) return;
-      
+
+      const focusable = getFocusable();
+      if (!focusable.length) {
+        e.preventDefault();
+        container.focus();
+        return;
+      }
+
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      // If focus has escaped the container (e.g. tabbed into the backdrop),
+      // bring it back inside instead of letting it wander behind the modal.
+      if (!container.contains(active)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+        return;
+      }
 
       if (e.shiftKey) {
         // Shift + Tab
-        if (document.activeElement === first || document.activeElement === containerRef.current) {
+        if (active === first || active === container) {
           e.preventDefault();
           last.focus();
         }
       } else {
         // Tab
-        if (document.activeElement === last) {
+        if (active === last) {
           e.preventDefault();
           first.focus();
         }
       }
     };
-    
+
     document.addEventListener('keydown', handleTab);
     return () => document.removeEventListener('keydown', handleTab);
   }, [isOpen, containerRef]);
